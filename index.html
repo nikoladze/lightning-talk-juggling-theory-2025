@@ -8,79 +8,109 @@
       margin: 0;
       background: #111;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      gap: 14px;
     }
-    canvas {
-      display: block;
+    canvas { display: block; }
+    #controls {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      color: #999;
+      font: 13px/1 monospace;
     }
+    #controls label { display: flex; align-items: center; gap: 8px; }
+    #controls input[type=number] {
+      width: 56px;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 4px 6px;
+      font: inherit;
+    }
+    #controls input[type=range] {
+      width: 130px;
+      accent-color: #777;
+    }
+    #lblHeight { min-width: 52px; }
   </style>
 </head>
 <body>
-  <canvas id="canvas" width="600" height="420"></canvas>
+  <canvas id="canvas" width="600" height="840"></canvas>
+  <div id="controls">
+    <label>Balls <input id="inBalls" type="number" min="1" max="21" step="2" value="9"></label>
+    <label>Height <input id="inHeight" type="range" min="50" max="620" value="267"></label>
+    <span id="lblHeight">267 px</span>
+  </div>
   <script>
     const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+    const ctx    = canvas.getContext('2d');
 
-    const G             = 1200;   // px/s²
-    const VY0           = -800;   // initial upward velocity
-    const VX_MAG        = 300;    // horizontal speed magnitude
+    const G             = 1200;
+    let vxMag           = 300;   // recomputed on each restart
     const RADIUS        = 18;
-    const FLOOR_Y       = 320;    // y where ball is caught/thrown
-    const LEFT_THROW_X  = 150;    // left hand throw position
-    const RIGHT_THROW_X = 450;    // right hand throw position
-    const SCOOP_DUR     = 0.2;   // seconds for the hand-arc phase
+    const FLOOR_Y       = 640;
+    const LEFT_THROW_X  = 150;
+    const RIGHT_THROW_X = 450;
+    const SCOOP_DUR     = 0.2;
+    const SCOOP_RADIUS  = 50;   // fixed half-width of the hand arc
 
-    const NUM_BALLS = 9;  // ← change this
+    let balls  = [];
+    let animId = null;
+    let lastTime = null;
 
-    const T_FLIGHT = 2 * Math.abs(VY0) / G;
-    const SPACING  = (T_FLIGHT + SCOOP_DUR) / NUM_BALLS;
+    function restart() {
+      const numBalls = Math.max(1, parseInt(document.getElementById('inBalls').value) || 1);
+      const height   = parseInt(document.getElementById('inHeight').value);
+      document.getElementById('lblHeight').textContent = height + ' px';
 
-    function ballColor(i) {
-      const hue = (i / NUM_BALLS) * 360;
-      return ['#fff', `hsl(${hue},100%,60%)`, `hsl(${hue},100%,28%)`];
-    }
+      const vy0      = -Math.sqrt(2 * G * height);
+      const tFlight  = 2 * Math.abs(vy0) / G;
+      const spacing  = (tFlight + SCOOP_DUR) / numBalls;
+      const catchDist = (RIGHT_THROW_X - LEFT_THROW_X) + 2 * SCOOP_RADIUS; // 400 px, fixed
+      vxMag = catchDist / tFlight;
 
-    const BALL_DEFS = Array.from({ length: NUM_BALLS }, (_, i) => ({
-      x0:    i % 2 === 0 ? LEFT_THROW_X  : RIGHT_THROW_X,
-      vx0:   i % 2 === 0 ? +VX_MAG       : -VX_MAG,
-      color: ballColor(i),
-      delay: i * SPACING,
-    }));
+      function ballColor(i) {
+        const hue = (i / numBalls) * 360;
+        return ['#fff', `hsl(${hue},100%,60%)`, `hsl(${hue},100%,28%)`];
+      }
 
-    function makeBall(def) {
-      return {
-        phase: 'waiting',      // 'waiting' | 'flying' | 'scooping'
-        timer: -def.delay,
-        x: def.x0, y: FLOOR_Y,
-        vx: def.vx0, vy: 0,
-        color: def.color,
+      balls = Array.from({ length: numBalls }, (_, i) => ({
+        phase: 'waiting',
+        timer: -(i * spacing),
+        x:   i % 2 === 0 ? LEFT_THROW_X  : RIGHT_THROW_X,
+        y:   FLOOR_Y,
+        vx:  i % 2 === 0 ? +vxMag : -vxMag,
+        vy:  0,
+        vy0,
+        color: ballColor(i),
         scoop: null,
-      };
-    }
+      }));
 
-    const balls = BALL_DEFS.map(makeBall);
+      lastTime = null;
+      if (animId) cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(loop);
+    }
 
     function launch(ball) {
       ball.phase = 'flying';
-      ball.vy = VY0;
+      ball.vy = ball.vy0;
     }
 
-    // When the ball lands at (ball.x, FLOOR_Y), start a downward half-circle
-    // arc toward the appropriate throw position on this side of the canvas.
     function startScoop(ball) {
-      const xLand = ball.x;
-      // Which hand catches it — pick the nearest throw point
-      const onRight = xLand > (LEFT_THROW_X + RIGHT_THROW_X) / 2;
+      const onRight = ball.x > (LEFT_THROW_X + RIGHT_THROW_X) / 2;
       const xThrow  = onRight ? RIGHT_THROW_X : LEFT_THROW_X;
-      const vxNext  = onRight ? -VX_MAG       : +VX_MAG;
-
-      const cx = (xLand + xThrow) / 2;
-      const r  = Math.abs(xThrow - xLand) / 2;
-      // goingLeft  (xLand > xThrow): angle 0 → π  (sin peaks at π/2 → dips DOWN)
-      // goingRight (xLand < xThrow): angle π → 0  (sin also peaks at π/2 → dips DOWN)
-      ball.scoop = { cx, r, goingLeft: xLand > xThrow, xThrow, vxNext, t: 0 };
+      const vxNext  = onRight ? -vxMag : +vxMag;
+      // Fixed-radius arc: catch position is always SCOOP_RADIUS outside the throw point.
+      // Right hand: catch at xThrow + SCOOP_RADIUS, arc goes left (angle 0 → π).
+      // Left  hand: catch at xThrow - SCOOP_RADIUS, arc goes right (angle π → 0).
+      const goingLeft = onRight;
+      const cx = goingLeft ? xThrow + SCOOP_RADIUS : xThrow - SCOOP_RADIUS;
+      ball.scoop = { cx, r: SCOOP_RADIUS, goingLeft, xThrow, vxNext, t: 0 };
       ball.phase = 'scooping';
     }
 
@@ -88,16 +118,16 @@
       const s = ball.scoop;
       s.t += dt / SCOOP_DUR;
       if (s.t >= 1) {
-        ball.x     = s.xThrow;
-        ball.y     = FLOOR_Y;
-        ball.vx    = s.vxNext;
+        ball.x    = s.xThrow;
+        ball.y    = FLOOR_Y;
+        ball.vx   = s.vxNext;
         ball.scoop = null;
         launch(ball);
         return;
       }
       const angle = s.goingLeft ? s.t * Math.PI : Math.PI * (1 - s.t);
       ball.x = s.cx + s.r * Math.cos(angle);
-      ball.y = FLOOR_Y + s.r * Math.sin(angle);   // sin ≥ 0 → arcs downward
+      ball.y = FLOOR_Y + s.r * Math.sin(angle);
     }
 
     function drawBall(x, y, colors) {
@@ -111,8 +141,6 @@
       ctx.fill();
     }
 
-    let lastTime = null;
-
     function loop(timestamp) {
       if (lastTime === null) lastTime = timestamp;
       let dt = (timestamp - lastTime) / 1000;
@@ -125,7 +153,6 @@
         if (ball.phase === 'waiting') {
           ball.timer += dt;
           if (ball.timer >= 0) launch(ball);
-
         } else if (ball.phase === 'flying') {
           ball.vy += G * dt;
           ball.x  += ball.vx * dt;
@@ -134,18 +161,19 @@
             ball.y = FLOOR_Y;
             startScoop(ball);
           }
-
-        } else { // scooping
+        } else {
           updateScoop(ball, dt);
         }
-
         drawBall(ball.x, ball.y, ball.color);
       }
 
-      requestAnimationFrame(loop);
+      animId = requestAnimationFrame(loop);
     }
 
-    requestAnimationFrame(loop);
+    document.getElementById('inBalls').addEventListener('change', restart);
+    document.getElementById('inHeight').addEventListener('input', restart);
+
+    restart();
   </script>
 </body>
 </html>
