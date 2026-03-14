@@ -23,7 +23,7 @@
       font: 13px/1 monospace;
     }
     #controls label { display: flex; align-items: center; gap: 8px; }
-    #controls input[type=number] {
+    #controls input[type=number], #controls input[type=text] {
       width: 56px;
       background: #222;
       color: #eee;
@@ -42,7 +42,7 @@
 <body>
   <canvas id="canvas" width="600" height="840"></canvas>
   <div id="controls">
-    <label>Balls <input id="inBalls" type="number" min="1" max="21" step="1" value="9"></label>
+    <label>Siteswap <input id="inSiteswap" type="text" value="3" style="width:72px"></label>
     <label>Height <input id="inHeight" type="range" min="50" max="620" value="267"></label>
     <span id="lblHeight">267 px</span>
   </div>
@@ -51,7 +51,9 @@
     const ctx    = canvas.getContext('2d');
 
     const G             = 1200;
-    let vxMag           = 300;   // recomputed on each restart
+    let siteswap        = [3];
+    let T               = 0.3;   // beat duration, recomputed on restart
+    let globalBeat      = 0;
     const RADIUS        = 18;
     const FLOOR_Y       = 640;
     const LEFT_THROW_X  = 150;
@@ -63,38 +65,55 @@
     let animId = null;
     let lastTime = null;
 
+    function parseSiteswap(str) {
+      str = str.trim();
+      if (/[\s,]/.test(str)) return str.split(/[\s,]+/).filter(Boolean).map(Number);
+      return str.split('').map(c => '0123456789'.includes(c) ? +c : 0);
+    }
+
     function restart() {
-      const numBalls = Math.max(1, parseInt(document.getElementById('inBalls').value) || 1);
-      const height   = parseInt(document.getElementById('inHeight').value);
+      const raw = document.getElementById('inSiteswap').value;
+      siteswap  = parseSiteswap(raw);
+      if (!siteswap.length || siteswap.some(isNaN)) siteswap = [3];
+      const P    = siteswap.length;
+      const sum  = siteswap.reduce((a, b) => a + b, 0);
+      const avgN = sum / P;
+      const numBalls = Math.round(avgN);
+
+      const height      = parseInt(document.getElementById('inHeight').value);
       document.getElementById('lblHeight').textContent = height + ' px';
 
-      const vy0      = -Math.sqrt(2 * G * height);
-      const tFlight  = 2 * Math.abs(vy0) / G;
-      const spacing  = (tFlight + SCOOP_DUR) / numBalls;
-      const isEven = numBalls % 2 === 0;
-      const catchDist = isEven
-        ? 2 * SCOOP_RADIUS
-        : (RIGHT_THROW_X - LEFT_THROW_X) + 2 * SCOOP_RADIUS;
-      vxMag = catchDist / tFlight;
+      const tFlightRef  = 2 * Math.sqrt(2 * height / G);
+      T = (tFlightRef + SCOOP_DUR) / avgN;
 
       function ballColor(i) {
         const hue = (i / numBalls) * 360;
         return ['#fff', `hsl(${hue},100%,60%)`, `hsl(${hue},100%,28%)`];
       }
 
-      balls = Array.from({ length: numBalls }, (_, i) => ({
-        phase: 'waiting',
-        timer: -(i * spacing),
-        x:   i % 2 === 0 ? LEFT_THROW_X  : RIGHT_THROW_X,
-        y:   FLOOR_Y,
-        vx:  isEven ? (i % 2 === 0 ? -vxMag : +vxMag) : (i % 2 === 0 ? +vxMag : -vxMag),
-        vy:  0,
-        vy0,
-        color: ballColor(i),
-        isEven,
-        scoop: null,
-      }));
+      balls = Array.from({ length: numBalls }, (_, i) => {
+        const throwVal  = siteswap[i % P];
+        const isEven_i  = throwVal % 2 === 0;
+        const tFlight_i = throwVal * T - SCOOP_DUR;
+        const vy0_i     = -G * tFlight_i / 2;
+        const catchDist = isEven_i ? 2 * SCOOP_RADIUS : (RIGHT_THROW_X - LEFT_THROW_X + 2 * SCOOP_RADIUS);
+        const vxMag_i   = catchDist / tFlight_i;
+        const onLeft    = i % 2 === 0;
+        const vx_i      = isEven_i ? (onLeft ? -vxMag_i : +vxMag_i) : (onLeft ? +vxMag_i : -vxMag_i);
+        return {
+          phase: 'waiting',
+          timer: -(i * T),
+          x:     onLeft ? LEFT_THROW_X : RIGHT_THROW_X,
+          y:     FLOOR_Y,
+          vx:    vx_i,
+          vy:    0,
+          vy0:   vy0_i,
+          color: ballColor(i),
+          scoop: null,
+        };
+      });
 
+      globalBeat = numBalls;
       lastTime = null;
       if (animId) cancelAnimationFrame(animId);
       animId = requestAnimationFrame(loop);
@@ -108,10 +127,9 @@
     function startScoop(ball) {
       const onLeft    = ball.x <= (LEFT_THROW_X + RIGHT_THROW_X) / 2;
       const xThrow    = onLeft ? LEFT_THROW_X : RIGHT_THROW_X;
-      const vxNext    = ball.isEven ? (onLeft ? -vxMag : +vxMag) : (onLeft ? +vxMag : -vxMag);
       const goingLeft = !onLeft;
       const cx        = goingLeft ? xThrow + SCOOP_RADIUS : xThrow - SCOOP_RADIUS;
-      ball.scoop = { cx, r: SCOOP_RADIUS, goingLeft, xThrow, vxNext, t: 0 };
+      ball.scoop = { cx, r: SCOOP_RADIUS, goingLeft, xThrow, t: 0 };
       ball.phase = 'scooping';
     }
 
@@ -119,9 +137,18 @@
       const s = ball.scoop;
       s.t += dt / SCOOP_DUR;
       if (s.t >= 1) {
+        const throwVal  = siteswap[globalBeat % siteswap.length];
+        globalBeat++;
+        const isEven    = throwVal % 2 === 0;
+        const tFlight   = Math.max(0.01, throwVal * T - SCOOP_DUR);
+        const catchDist = isEven ? 2 * SCOOP_RADIUS : (RIGHT_THROW_X - LEFT_THROW_X + 2 * SCOOP_RADIUS);
+        const vxMag     = catchDist / tFlight;
+        const onLeft    = s.xThrow === LEFT_THROW_X;
+        const vxNext    = isEven ? (onLeft ? -vxMag : +vxMag) : (onLeft ? +vxMag : -vxMag);
         ball.x    = s.xThrow;
         ball.y    = FLOOR_Y;
-        ball.vx   = s.vxNext;
+        ball.vx   = vxNext;
+        ball.vy0  = -G * tFlight / 2;
         ball.scoop = null;
         launch(ball);
         return;
@@ -171,7 +198,7 @@
       animId = requestAnimationFrame(loop);
     }
 
-    document.getElementById('inBalls').addEventListener('change', restart);
+    document.getElementById('inSiteswap').addEventListener('change', restart);
     document.getElementById('inHeight').addEventListener('input', restart);
 
     restart();
