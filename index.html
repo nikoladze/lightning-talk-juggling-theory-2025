@@ -4,23 +4,22 @@
   <meta charset="UTF-8">
   <title>Juggling Animation</title>
   <style>
-    body {
-      margin: 0;
-      background: #111;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      gap: 14px;
-    }
+    body { margin: 0; overflow: hidden; background: #111; }
     canvas { display: block; }
     #controls {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
       display: flex;
       gap: 24px;
       align-items: center;
-      color: #999;
+      color: #ccc;
       font: 13px/1 monospace;
+      background: rgba(0,0,0,0.55);
+      padding: 8px 14px;
+      border-radius: 8px;
     }
     #controls label { display: flex; align-items: center; gap: 8px; }
     #controls input[type=number], #controls input[type=text] {
@@ -36,17 +35,17 @@
       width: 130px;
       accent-color: #777;
     }
-    #lblHeight { min-width: 52px; }
+    #lblHeight, #lblSpacing { min-width: 52px; }
   </style>
 </head>
 <body>
-  <canvas id="canvas" width="600" height="840"></canvas>
+  <canvas id="canvas"></canvas>
   <div id="controls">
     <label>Siteswap <input id="inSiteswap" type="text" value="3" style="width:72px"></label>
     <label>Ref throw <input id="inRef" type="number" min="1" max="35" value="3" style="width:44px"></label>
     <label>Height <input id="inHeight" type="range" min="50" max="620" value="267"></label>
     <span id="lblHeight">267 px</span>
-    <label>Spacing <input id="inSpacing" type="range" min="120" max="520" value="300"></label>
+    <label>Spacing <input id="inSpacing" type="range" min="10" max="400" value="100"></label>
     <span id="lblSpacing">300 px</span>
   </div>
   <script>
@@ -57,10 +56,10 @@
     let siteswap        = [3];
     let T               = 0.3;   // beat duration, recomputed on restart
     const RADIUS        = 18;
-    const FLOOR_Y       = 640;
-    const CENTER_X      = canvas.width / 2;
-    let LEFT_THROW_X    = 150;
-    let RIGHT_THROW_X   = 450;
+    let FLOOR_Y       = 640;
+    let CENTER_X      = 300;
+    let LEFT_THROW_X  = 150;
+    let RIGHT_THROW_X = 450;
     const SCOOP_DUR     = 0.2;
     const SCOOP_RADIUS  = 50;   // fixed half-width of the hand arc
 
@@ -250,12 +249,27 @@
       animId = requestAnimationFrame(loop);
     }
 
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      FLOOR_Y  = canvas.height - 100;
+      CENTER_X = canvas.width / 2;
+      const hSlider = document.getElementById('inHeight');
+      const maxH = FLOOR_Y - 50;
+      hSlider.max = maxH;
+      if (parseInt(hSlider.value) > maxH) hSlider.value = maxH;
+      const sSlider = document.getElementById('inSpacing');
+      sSlider.max = Math.max(10, canvas.width - 200);
+      restart();
+    }
+
     document.getElementById('inSiteswap').addEventListener('change', restart);
     document.getElementById('inRef').addEventListener('change', restart);
     document.getElementById('inHeight').addEventListener('input', restart);
     document.getElementById('inSpacing').addEventListener('input', restart);
+    window.addEventListener('resize', resize);
 
-    restart();
+    resize();
   </script>
 </body>
 </html>
