@@ -160,10 +160,16 @@
 
     function updateBall(ball, t) {
       for (let i = 0; i < 200; i++) {
-        if      (ball.phase === 'waiting'  && t >= ball.tStart)       startScoop(ball, ball.tStart);
-        else if (ball.phase === 'flying'   && t >= ball.tLand)        startScoop(ball, ball.tLand);
-        else if (ball.phase === 'scooping' && t >= ball.scoop.tEnd)   completeScoop(ball, ball.scoop.tEnd);
-        else break;
+        if (ball.phase === 'waiting' && t >= ball.tStart) {
+          startScoop(ball, ball.tStart);
+        } else if (ball.phase === 'flying' && t >= ball.tLand) {
+          // update x,y to the exact landing position before startScoop reads ball.x
+          ball.x = ball.x0 + ball.vx * (ball.tLand - ball.tLaunch);
+          ball.y = FLOOR_Y;
+          startScoop(ball, ball.tLand);
+        } else if (ball.phase === 'scooping' && t >= ball.scoop.tEnd) {
+          completeScoop(ball, ball.scoop.tEnd);
+        } else break;
       }
       if (ball.phase === 'flying') {
         const tau = t - ball.tLaunch;
