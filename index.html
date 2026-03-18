@@ -43,6 +43,7 @@
   <canvas id="canvas" width="600" height="840"></canvas>
   <div id="controls">
     <label>Siteswap <input id="inSiteswap" type="text" value="3" style="width:72px"></label>
+    <label>Ref throw <input id="inRef" type="number" min="1" max="35" value="3" style="width:44px"></label>
     <label>Height <input id="inHeight" type="range" min="50" max="620" value="267"></label>
     <span id="lblHeight">267 px</span>
     <label>Spacing <input id="inSpacing" type="range" min="120" max="520" value="300"></label>
@@ -95,8 +96,9 @@
       LEFT_THROW_X  = CENTER_X - spacing / 2;
       RIGHT_THROW_X = CENTER_X + spacing / 2;
 
+      const refThrow    = Math.max(1, parseInt(document.getElementById('inRef').value) || 3);
       const tFlightRef  = 2 * Math.sqrt(2 * height / G);
-      T = (tFlightRef + SCOOP_DUR) / avgN;
+      T = (tFlightRef + SCOOP_DUR) / refThrow;
 
       function ballColor(i) {
         const hue = (i / numBalls) * 360;
@@ -215,6 +217,7 @@
     }
 
     document.getElementById('inSiteswap').addEventListener('change', restart);
+    document.getElementById('inRef').addEventListener('change', restart);
     document.getElementById('inHeight').addEventListener('input', restart);
     document.getElementById('inSpacing').addEventListener('input', restart);
 
