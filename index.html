@@ -147,11 +147,12 @@
       const vxMag     = catchDist / tFlight;
       const onLeft    = s.xThrow === LEFT_THROW_X;
       const vxNext    = isEven ? (onLeft ? -vxMag : +vxMag) : (onLeft ? +vxMag : -vxMag);
+      const b      = ball.beatIndex; // before increment — canonical beat index
       ball.x0      = s.xThrow;
       ball.vx      = vxNext;
       ball.vy0     = -G * tFlight / 2;
-      ball.tLaunch = tNow;
-      ball.tLand   = tNow + tFlight;
+      ball.tLaunch = b * T + SCOOP_DUR;      // direct, no accumulated error
+      ball.tLand   = ball.tLaunch + tFlight; // = (b + throwVal) * T
       ball.beatIndex += throwVal;
       ball.scoop   = null;
       ball.phase   = 'flying';
