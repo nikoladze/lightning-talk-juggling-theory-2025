@@ -252,7 +252,8 @@
     function resize() {
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
-      FLOOR_Y  = canvas.height - 100;
+      const ctrl = document.getElementById('controls');
+      FLOOR_Y  = canvas.height - ctrl.offsetHeight - SCOOP_RADIUS - 50;
       CENTER_X = canvas.width / 2;
       const hSlider = document.getElementById('inHeight');
       const maxH = FLOOR_Y - 50;
