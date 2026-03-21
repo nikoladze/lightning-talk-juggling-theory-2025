@@ -31,10 +31,7 @@
       padding: 4px 6px;
       font: inherit;
     }
-    #controls input[type=range] {
-      width: 130px;
-      accent-color: #777;
-    }
+    #controls input[type=range] { width: 130px; accent-color: #777; }
     #lblHeight, #lblSpacing { min-width: 52px; }
   </style>
 </head>
@@ -45,222 +42,45 @@
     <label>Ref throw <input id="inRef" type="number" min="1" max="35" value="3" style="width:44px"></label>
     <label>Height <input id="inHeight" type="range" min="50" max="620" value="267"></label>
     <span id="lblHeight">267 px</span>
-    <label>Spacing <input id="inSpacing" type="range" min="10" max="400" value="100"></label>
+    <label>Spacing <input id="inSpacing" type="range" min="10" max="800" value="300"></label>
     <span id="lblSpacing">300 px</span>
   </div>
+  <script src="juggling.js"></script>
   <script>
     const canvas = document.getElementById('canvas');
-    const ctx    = canvas.getContext('2d');
+    let anim = null;
+    let floorY = 0;
 
-    const G             = 1200;
-    let siteswap        = [3];
-    let T               = 0.3;   // beat duration, recomputed on restart
-    const RADIUS        = 18;
-    let FLOOR_Y       = 640;
-    let CENTER_X      = 300;
-    let LEFT_THROW_X  = 150;
-    let RIGHT_THROW_X = 450;
-    const SCOOP_DUR     = 0.2;
-    const SCOOP_RADIUS  = 50;   // fixed half-width of the hand arc
-
-    let balls  = [];
-    let animId = null;
-    let animStartTime = null;
-
-    function parseSiteswap(str) {
-      str = str.trim();
-      if (/[\s,]/.test(str)) return str.split(/[\s,]+/).filter(Boolean).map(Number);
-      return str.split('').map(c => {
-        if (c >= '0' && c <= '9') return +c;
-        const lower = c.toLowerCase();
-        if (lower >= 'a' && lower <= 'z') return lower.charCodeAt(0) - 97 + 10;
-        return 0;
-      });
+    function opts() {
+      return {
+        siteswap: document.getElementById('inSiteswap').value,
+        refThrow: Math.max(1, parseInt(document.getElementById('inRef').value) || 3),
+        height:   parseInt(document.getElementById('inHeight').value),
+        spacing:  parseInt(document.getElementById('inSpacing').value),
+        floorY,
+      };
     }
 
     function restart() {
-      const raw = document.getElementById('inSiteswap').value;
-      siteswap  = parseSiteswap(raw);
-      if (!siteswap.length || siteswap.some(isNaN)) siteswap = [3];
-      const P    = siteswap.length;
-      const sum  = siteswap.reduce((a, b) => a + b, 0);
-      const avgN = sum / P;
-      const numBalls = Math.round(avgN);
-
-      const height      = parseInt(document.getElementById('inHeight').value);
-      document.getElementById('lblHeight').textContent = height + ' px';
-
-      const spacing     = parseInt(document.getElementById('inSpacing').value);
-      document.getElementById('lblSpacing').textContent = spacing + ' px';
-      LEFT_THROW_X  = CENTER_X - spacing / 2;
-      RIGHT_THROW_X = CENTER_X + spacing / 2;
-
-      const refThrow    = Math.max(1, parseInt(document.getElementById('inRef').value) || 3);
-      const tFlightRef  = 2 * Math.sqrt(2 * height / G);
-      T = (tFlightRef + SCOOP_DUR) / refThrow;
-
-      function ballColor(i) {
-        const hue = (i / numBalls) * 360;
-        return ['#fff', `hsl(${hue},100%,60%)`, `hsl(${hue},100%,28%)`];
-      }
-
-      // Compute initial state: for each future beat [0, maxThrow), find the unique
-      // past throw that places a ball there. Balls not at beat 0 are already in the air.
-      const maxThrow = Math.max(...siteswap);
-      balls = [];
-      for (let landBeat = 0; landBeat < maxThrow; landBeat++) {
-        for (let throwVal = 1; throwVal <= maxThrow; throwVal++) {
-          const sourceBeat = landBeat - throwVal;
-          if (sourceBeat >= 0) continue;
-          if (siteswap[((sourceBeat % P) + P) % P] !== throwVal) continue;
-
-          const sourceOnLeft = ((sourceBeat % 2) + 2) % 2 === 0;
-          const xThrow      = sourceOnLeft ? LEFT_THROW_X : RIGHT_THROW_X;
-          const isEven      = throwVal % 2 === 0;
-          const tFlight     = throwVal * T - SCOOP_DUR;
-          const catchDist   = isEven ? 2 * SCOOP_RADIUS : (RIGHT_THROW_X - LEFT_THROW_X + 2 * SCOOP_RADIUS);
-          const vxMag       = catchDist / tFlight;
-          const vxNext      = isEven ? (sourceOnLeft ? -vxMag : vxMag) : (sourceOnLeft ? vxMag : -vxMag);
-          const catchOnLeft = isEven ? sourceOnLeft : !sourceOnLeft;
-          const xCatch      = catchOnLeft ? LEFT_THROW_X - 2 * SCOOP_RADIUS : RIGHT_THROW_X + 2 * SCOOP_RADIUS;
-
-          balls.push({
-            phase:   'flying',
-            x:       xCatch,
-            y:       FLOOR_Y,
-            x0:      xThrow,
-            vx:      vxNext,
-            vy0:     -G * tFlight / 2,
-            tLaunch: sourceBeat * T + SCOOP_DUR,
-            tLand:   landBeat * T,
-            color:   ballColor(balls.length),
-            beatIndex: landBeat,
-            scoop:   null,
-          });
-          break;
-        }
-      }
-      animStartTime = null;
-      if (animId) cancelAnimationFrame(animId);
-      animId = requestAnimationFrame(loop);
-    }
-
-    function startScoop(ball, tNow) {
-      const onLeft = ball.x <= (LEFT_THROW_X + RIGHT_THROW_X) / 2;
-      const xThrow = onLeft ? LEFT_THROW_X : RIGHT_THROW_X;
-
-      // Incoming velocity at landing
-      const vxIn = ball.vx;
-      const vyIn = G * (tNow - ball.tLaunch) / 2; // = G*tFlight/2, positive = downward
-
-      // Look ahead: outgoing throw velocity (read-only, same logic as completeScoop)
-      let bi = ball.beatIndex, safety = 0;
-      while (siteswap[bi % siteswap.length] === 0 && safety++ < siteswap.length) bi++;
-      const throwVal  = siteswap[bi % siteswap.length];
-      const isEven    = throwVal % 2 === 0;
-      const tFlight   = Math.max(0.01, throwVal * T - SCOOP_DUR);
-      const catchDist = isEven ? 2 * SCOOP_RADIUS : (RIGHT_THROW_X - LEFT_THROW_X + 2 * SCOOP_RADIUS);
-      const vxMag     = catchDist / tFlight;
-      const vxOut     = isEven ? (onLeft ? -vxMag : +vxMag) : (onLeft ? +vxMag : -vxMag);
-      const vy0Out    = -G * tFlight / 2; // negative = upward
-
-      // Cubic Bézier: normalize tangent directions, scale by SCOOP_RADIUS
-      // P'(0)/3 ∝ incoming velocity → no kink at catch
-      // P'(1)/3 ∝ outgoing velocity → no kink at throw
-      const x0 = ball.x, y0 = FLOOR_Y, x3 = xThrow, y3 = FLOOR_Y;
-      const lenIn  = Math.hypot(vxIn, vyIn)  || 1;
-      const lenOut = Math.hypot(vxOut, vy0Out) || 1;
-      const cx1 = x0 + (vxIn  / lenIn)  * SCOOP_RADIUS;
-      const cy1 = y0 + (vyIn  / lenIn)  * SCOOP_RADIUS;  // > FLOOR_Y (dips down)
-      const cx2 = x3 - (vxOut / lenOut) * SCOOP_RADIUS;
-      const cy2 = y3 - (vy0Out / lenOut) * SCOOP_RADIUS; // > FLOOR_Y (dips down)
-
-      ball.scoop = { tStart: tNow, tEnd: tNow + SCOOP_DUR, x0, y0, cx1, cy1, cx2, cy2, x3, y3, xThrow };
-      ball.phase = 'scooping';
-    }
-
-    function completeScoop(ball, tNow) {
-      const s = ball.scoop;
-      // Advance past any 0-valued beats (shouldn't occur in valid siteswap)
-      let safety = 0;
-      while (siteswap[ball.beatIndex % siteswap.length] === 0 && safety++ < siteswap.length) {
-        ball.beatIndex++;
-      }
-      const throwVal  = siteswap[ball.beatIndex % siteswap.length];
-      const isEven    = throwVal % 2 === 0;
-      const tFlight   = Math.max(0.01, throwVal * T - SCOOP_DUR);
-      const catchDist = isEven ? 2 * SCOOP_RADIUS : (RIGHT_THROW_X - LEFT_THROW_X + 2 * SCOOP_RADIUS);
-      const vxMag     = catchDist / tFlight;
-      const onLeft    = s.xThrow === LEFT_THROW_X;
-      const vxNext    = isEven ? (onLeft ? -vxMag : +vxMag) : (onLeft ? +vxMag : -vxMag);
-      const b      = ball.beatIndex; // before increment — canonical beat index
-      ball.x0      = s.xThrow;
-      ball.vx      = vxNext;
-      ball.vy0     = -G * tFlight / 2;
-      ball.tLaunch = b * T + SCOOP_DUR;      // direct, no accumulated error
-      ball.tLand   = ball.tLaunch + tFlight; // = (b + throwVal) * T
-      ball.beatIndex += throwVal;
-      ball.scoop   = null;
-      ball.phase   = 'flying';
-    }
-
-    function updateBall(ball, t) {
-      for (let i = 0; i < 200; i++) {
-        if (ball.phase === 'flying' && t >= ball.tLand) {
-          // update x,y to the exact landing position before startScoop reads ball.x
-          ball.x = ball.x0 + ball.vx * (ball.tLand - ball.tLaunch);
-          ball.y = FLOOR_Y;
-          startScoop(ball, ball.tLand);
-        } else if (ball.phase === 'scooping' && t >= ball.scoop.tEnd) {
-          completeScoop(ball, ball.scoop.tEnd);
-        } else break;
-      }
-      if (ball.phase === 'flying') {
-        const tau = t - ball.tLaunch;
-        ball.x = ball.x0 + ball.vx * tau;
-        ball.y = FLOOR_Y + ball.vy0 * tau + 0.5 * G * tau * tau;
-      } else if (ball.phase === 'scooping') {
-        const s = ball.scoop;
-        const f = (t - s.tStart) / SCOOP_DUR, g = 1 - f;
-        ball.x = g*g*g*s.x0 + 3*g*g*f*s.cx1 + 3*g*f*f*s.cx2 + f*f*f*s.x3;
-        ball.y = g*g*g*s.y0 + 3*g*g*f*s.cy1 + 3*g*f*f*s.cy2 + f*f*f*s.y3;
-      }
-    }
-
-    function drawBall(x, y, colors) {
-      ctx.beginPath();
-      ctx.arc(x, y, RADIUS, 0, Math.PI * 2);
-      const grad = ctx.createRadialGradient(x - 5, y - 6, 2, x, y, RADIUS);
-      grad.addColorStop(0,   colors[0]);
-      grad.addColorStop(0.2, colors[1]);
-      grad.addColorStop(1,   colors[2]);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    }
-
-    function loop(timestamp) {
-      if (animStartTime === null) animStartTime = timestamp;
-      const t = (timestamp - animStartTime) / 1000;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const ball of balls) {
-        updateBall(ball, t);
-        drawBall(ball.x, ball.y, ball.color);
-      }
-      animId = requestAnimationFrame(loop);
+      document.getElementById('lblHeight').textContent  = document.getElementById('inHeight').value  + ' px';
+      document.getElementById('lblSpacing').textContent = document.getElementById('inSpacing').value + ' px';
+      if (anim) anim.stop();
+      anim = startJuggling(canvas, opts());
     }
 
     function resize() {
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
       const ctrl = document.getElementById('controls');
-      FLOOR_Y  = canvas.height - ctrl.offsetHeight - SCOOP_RADIUS - 50;
-      CENTER_X = canvas.width / 2;
+      floorY = canvas.height - ctrl.offsetHeight - 50 - 14 - 14;
+
       const hSlider = document.getElementById('inHeight');
-      const maxH = FLOOR_Y - 50;
-      hSlider.max = maxH;
-      if (parseInt(hSlider.value) > maxH) hSlider.value = maxH;
+      hSlider.max = floorY - 50;
+      if (parseInt(hSlider.value) > hSlider.max) hSlider.value = hSlider.max;
+
       const sSlider = document.getElementById('inSpacing');
       sSlider.max = Math.max(10, canvas.width - 200);
+
       restart();
     }
 
