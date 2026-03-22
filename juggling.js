@@ -54,7 +54,7 @@ function startJuggling(canvas, {
 
   function ballColor(i) {
     const hue = (i / numBalls) * 360;
-    return ['#fff', `hsl(${hue},100%,60%)`, `hsl(${hue},100%,28%)`];
+    return [`hsl(${hue},60%,95%)`, `hsl(${hue},90%,52%)`, `hsl(${hue},80%,30%)`];
   }
 
   // ── initial state ──────────────────────────────────────────────────────────

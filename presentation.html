@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Juggling Presentation</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
   <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3/dist/svg.min.js"></script>
   <style>
     .reveal .slides section {
@@ -43,8 +43,8 @@
     }
     .ss-digit {
       transition: color 0.12s;
-      color: #333;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+      color: #bbb;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
   </style>
 </head>
@@ -71,7 +71,7 @@
         <canvas id="canvas-51" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
         <!-- state diagram overlaid at bottom with gradient for legibility -->
         <div style="position:absolute;bottom:0;left:0;right:0;
-                    background:linear-gradient(transparent,rgba(0,0,0,0.9) 28%);
+                    background:linear-gradient(transparent,rgba(255,255,255,0.95) 28%);
                     padding-top:70px;">
         <div id="state-diagram-container"></div>
         <script>
@@ -81,9 +81,9 @@
           const cx = i => X0 + i * STEP + (CW >> 1);  // horizontal centre of cell i
 
           // ── ball palette: hues 0°, 120°, 240° ───────────────────────────────
-          const HUE  = [0, 120, 240];
-          const MID  = i => `hsl(${HUE[i]},100%,60%)`;   // bright stroke / text
-          const DARK = ['#1f0808', '#0b1f0b', '#08081e']; // dim cell fill
+          const HUE   = [0, 120, 240];
+          const MID   = i => `hsl(${HUE[i]},80%,40%)`;           // dark accent for light bg
+          const LIGHT = ['#fef4f4', '#f4fef4', '#f4f4fe'];        // dim cell fill
 
           // ── cell data: [label, ballIndex]  (-1 = empty beat) ────────────────
           const CELLS = [
@@ -117,26 +117,26 @@
           const SEP = Math.round((cx(5) + cx(6)) / 2);
           const lbl = (text, x) =>
             draw.plain(text).attr({ x, y: 26 })
-                .fill('#666').font({ size: 14, family: 'sans-serif', anchor: 'middle' });
+                .fill('#888').font({ size: 14, family: 'sans-serif', anchor: 'middle' });
           lbl('throws',       Math.round((cx(0) + cx(5)) / 2));
           lbl('balls in air', Math.round((cx(6) + cx(9)) / 2));
 
           // separator
           draw.line(SEP, 16, SEP, Y0 + CH + 8)
-              .stroke({ color: '#555', width: 1.5, dasharray: '5,4' });
+              .stroke({ color: '#bbb', width: 1.5, dasharray: '5,4' });
 
           // cells + beat-index labels
           CELLS.forEach(([label, ball], i) => {
             const x = X0 + i * STEP, c = cx(i), empty = ball < 0;
-            const stroke = empty ? '#3a3a3a' : MID(ball);
+            const stroke = empty ? '#ccc' : MID(ball);
             draw.rect(CW, CH).move(x, Y0).radius(5).id('cell-rect-' + i)
-                .fill(empty ? '#181818' : DARK[ball])
+                .fill(empty ? '#f0f0f0' : LIGHT[ball])
                 .stroke({ color: stroke, width: empty ? 1.5 : 2 });
             draw.plain(label).attr({ x: c, y: Y0 + 37 }).id('cell-label-' + i)
-                .fill(empty ? '#484848' : stroke)
+                .fill(empty ? '#bbb' : stroke)
                 .font({ size: 28, family: 'monospace', weight: 'bold', anchor: 'middle' });
             draw.plain(String(i)).attr({ x: c, y: Y0 + CH + 10 })
-                .fill('#444').font({ size: 12, family: 'monospace', anchor: 'middle' });
+                .fill('#999').font({ size: 12, family: 'monospace', anchor: 'middle' });
           });
 
           // arrows — hidden; revealed by onBeat at throw time
@@ -151,8 +151,8 @@
 
           // caption
           draw.text(add => {
-            add.tspan('if no more throws are made, each ball lands on its ').fill('#555');
-            add.tspan('x').fill('#777').font({ style: 'italic' });
+            add.tspan('if no more throws are made, each ball lands on its ').fill('#999');
+            add.tspan('x').fill('#aaa').font({ style: 'italic' });
           }).attr({ x: 480, y: 258, 'text-anchor': 'middle' })
             .font({ size: 13, family: 'sans-serif' });
         })();
@@ -194,11 +194,11 @@
     function onBeat(beatPos, throwVal, color) {
       const mid = color[1];
       digits[beatPos].style.color = mid;
-      digits[beatPos].style.textShadow = `0 0 40px ${mid}, 0 2px 12px rgba(0,0,0,0.7)`;
+      digits[beatPos].style.textShadow = `0 0 40px ${mid}, 0 1px 4px rgba(0,0,0,0.08)`;
       if (lastColor[beatPos]) clearTimeout(lastColor[beatPos]);
       lastColor[beatPos] = setTimeout(() => {
-        digits[beatPos].style.color = '#333';
-        digits[beatPos].style.textShadow = '0 2px 12px rgba(0,0,0,0.7)';
+        digits[beatPos].style.color = '#bbb';
+        digits[beatPos].style.textShadow = '0 1px 4px rgba(0,0,0,0.08)';
       }, 400);
     }
 
@@ -223,8 +223,8 @@
     const CELL_BALL  = [0, 1, 1, 2, 2, 0, 0, 1, -1, 2];
     // beat → arrow index that LANDS on that beat
     const LANDING_AT = {5:0, 2:1, 7:2, 4:3, 9:4, 6:5};
-    const DARK_FILL  = ['#1f0808', '#0b1f0b', '#08081e'];
-    const hue2 = i => `hsl(${[0, 120, 240][i]},100%,60%)`;
+    const LIGHT_FILL = ['#fef4f4', '#f4fef4', '#f4f4fe'];
+    const hue2 = i => `hsl(${[0, 120, 240][i]},80%,40%)`;
 
     function resetDiagram() {
       for (let i = 0; i < 6; i++) {
@@ -234,9 +234,9 @@
       CELL_BALL.forEach((ball, i) => {
         const empty = ball < 0;
         const rect = document.getElementById('cell-rect-' + i);
-        if (rect) rect.setAttribute('fill', empty ? '#181818' : DARK_FILL[ball]);
+        if (rect) rect.setAttribute('fill', empty ? '#f0f0f0' : LIGHT_FILL[ball]);
         const lbl = document.getElementById('cell-label-' + i);
-        if (lbl) lbl.setAttribute('fill', empty ? '#484848' : hue2(ball));
+        if (lbl) lbl.setAttribute('fill', empty ? '#bbb' : hue2(ball));
       });
     }
 
@@ -246,7 +246,7 @@
         const rect = document.getElementById('cell-rect-' + beat);
         if (rect) rect.setAttribute('fill', hue2(ball));
         const lbl = document.getElementById('cell-label-' + beat);
-        if (lbl) lbl.setAttribute('fill', '#000');
+        if (lbl) lbl.setAttribute('fill', '#fff');
       }
       const ai = LANDING_AT[beat];  // landing: show the arrow
       if (ai !== undefined) {
@@ -259,7 +259,7 @@
       const ball = CELL_BALL[beat];
       if (ball >= 0 && beat < 6) {
         const rect = document.getElementById('cell-rect-' + beat);
-        if (rect) rect.setAttribute('fill', DARK_FILL[ball]);
+        if (rect) rect.setAttribute('fill', LIGHT_FILL[ball]);
         const lbl = document.getElementById('cell-label-' + beat);
         if (lbl) lbl.setAttribute('fill', hue2(ball));
       }
