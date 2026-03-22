@@ -244,12 +244,11 @@
 
     function revealBeat(beat) {
       const ball = CELL_BALL[beat];
-      if (ball >= 0 && beat < 6) {  // throw cell: highlight it
-        const rect = document.getElementById('cell-rect-' + beat);
-        if (rect) rect.setAttribute('fill', hue2(ball));
-        const lbl = document.getElementById('cell-label-' + beat);
-        if (lbl) lbl.setAttribute('fill', '#fff');
-      }
+      const rect = document.getElementById('cell-rect-' + beat);
+      if (rect && (ball >= 0)) rect.setAttribute('fill', hue2(ball));
+      if (ball < 0) rect.setAttribute('fill', "#aaa");
+      const lbl = document.getElementById('cell-label-' + beat);
+      if (lbl) lbl.setAttribute('fill', '#fff');
       const ai = LANDING_AT[beat];  // landing: show the arrow
       if (ai !== undefined) {
         const el = document.getElementById('arrow-' + ai);
@@ -259,11 +258,16 @@
 
     function hideBeat(beat) {
       const ball = CELL_BALL[beat];
-      if (ball >= 0 && beat < 6) {
+      //if (ball >= 0 && beat < 6) {
+      if (true) {
         const rect = document.getElementById('cell-rect-' + beat);
         if (rect) rect.setAttribute('fill', LIGHT_FILL[ball]);
         const lbl = document.getElementById('cell-label-' + beat);
-        if (lbl) lbl.setAttribute('fill', hue2(ball));
+	if (ball >= 0 && lbl) lbl.setAttribute('fill', hue2(ball));
+	else if (ball < 0) {
+	  lbl.setAttribute('fill', '#bbb');
+	  rect.setAttribute('fill', '#f0f0f0');
+	}
       }
       const ai = LANDING_AT[beat];
       if (ai !== undefined) {
