@@ -162,7 +162,7 @@ function startJuggling(canvas, {
         ball.y = FLOOR_Y;
         if (throwCutoffT !== null && ball.tLand >= throwCutoffT) {
           ball.phase = 'landed';
-          ball.tDisappear = ball.tLand + 1e-6;
+          ball.tDisappear = ball.tLand + T;
           // fall through to check 'landed' next iteration
         } else {
           startScoop(ball, ball.tLand);
@@ -185,7 +185,18 @@ function startJuggling(canvas, {
     }
   }
 
-  function drawBall(x, y, [hi, mid, lo]) {
+  // alpha for 'landed' balls: fully visible until 40% of the beat, then
+  // 1.5 blink cycles (ends at alpha=0 just as tDisappear triggers)
+  function landedAlpha(ball, t) {
+    if (ball.phase !== 'landed') return 1;
+    const progress = (t - ball.tLand) / T;
+    if (progress < 0.4) return 1;
+    const p = (progress - 0.4) / 0.6;
+    return Math.max(0, 0.5 + 0.5 * Math.cos(p * Math.PI * 3));
+  }
+
+  function drawBall(x, y, [hi, mid, lo], alpha = 1) {
+    ctx.globalAlpha = alpha;
     ctx.beginPath();
     ctx.arc(x, y, BALL_RADIUS, 0, Math.PI * 2);
     const gr = ctx.createRadialGradient(x - 5, y - 6, 2, x, y, BALL_RADIUS);
@@ -194,6 +205,7 @@ function startJuggling(canvas, {
     gr.addColorStop(1,   lo);
     ctx.fillStyle = gr;
     ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
   // ── animation loop ─────────────────────────────────────────────────────────
@@ -208,7 +220,7 @@ function startJuggling(canvas, {
 
     if (simLimit !== null && t >= simLimit) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const ball of balls) { updateBall(ball, simLimit); if (ball.phase !== 'gone') drawBall(ball.x, ball.y, ball.color); }
+      for (const ball of balls) { updateBall(ball, simLimit); if (ball.phase !== 'gone') drawBall(ball.x, ball.y, ball.color, landedAlpha(ball, simLimit)); }
       simOffset = simLimit;
       animId = null;
       return;
@@ -217,7 +229,7 @@ function startJuggling(canvas, {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (const ball of balls) {
       updateBall(ball, t);
-      if (ball.phase !== 'gone') drawBall(ball.x, ball.y, ball.color);
+      if (ball.phase !== 'gone') drawBall(ball.x, ball.y, ball.color, landedAlpha(ball, t));
     }
     animId = requestAnimationFrame(loop);
   }
@@ -229,7 +241,7 @@ function startJuggling(canvas, {
     initialBalls.forEach(b => balls.push({ ...b }));
     for (const ball of balls) updateBall(ball, targetT);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (const ball of balls) { if (ball.phase !== 'gone') drawBall(ball.x, ball.y, ball.color); }
+    for (const ball of balls) { if (ball.phase !== 'gone') drawBall(ball.x, ball.y, ball.color, landedAlpha(ball, targetT)); }
     simOffset = targetT;
     animStartTime = null;
   }
