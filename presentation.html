@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
   <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3/dist/svg.min.js"></script>
   <style>
+    :root { --r-main-font-size: 30px; }
     .reveal .slides section {
       height: 100%;
       padding: 0;
@@ -41,8 +42,9 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .ss-digit {
-      transition: color 0.12s;
+   .ss-digit {
+      font-size: 20px;
+       /* transition: color 0.12s; */
       color: #bbb;
       text-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
@@ -68,22 +70,28 @@
 	  <li>"Jonglieren" in diesem Kontext:
 	    <ul>
 	      <li>Die Hände (meistens 2) werfen abwechselnd</li>
-	      <li>In jedem Zeitschritt wird entweder ein oder kein Ball geworfen (nicht mehrere)</li>
+	      <li>In jedem Zeitschritt wird 0 oder 1 Ball geworfen (nicht mehrere)</li>
 	    </ul>
 	    <li>Jongliermuster werden als Zahlenfolge beschrieben</li>
-	    <li>Jede Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet</li>
+	    <li>Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet<br>&rarr; Wurfhöhe</li>
+	    <li>Bei 2 Händen:</li>
+	    <ul>
+	      <li><b>Ungerade Zahl:</b> Wurf über Kreuz <b>in die andre Hand</b></li>
+	      <li><b>Gerade Zahl:</b> Wurf in landet <b>in der gleichen Hand</b></li>
+	    </ul>
+	    <li>Das Muster wird unendlich wiederholt<br>&rarr; z.B. 3 ist äquivalent zu 3333333...</li>
 	</ul>
       </section>
 
       <!-- Slide 1: 441 juggling -->
       <section data-slide="juggling-441">
         <div class="slide-juggling">
-          <canvas id="juggle-canvas"></canvas>
-          <div id="siteswap-display">
+	  <div id="siteswap-display">
             <span class="ss-digit" id="d0">4</span>
             <span class="ss-digit" id="d1">4</span>
             <span class="ss-digit" id="d2">1</span>
-          </div>
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
         </div>
       </section>
 
