@@ -83,6 +83,29 @@
 	</ul>
       </section>
 
+      <!-- Slide 1: 1 juggling -->
+      <section data-slide="juggling"
+               data-siteswap="1">
+        <div class="slide-juggling">
+	  <div id="siteswap-display">
+            <span class="ss-digit" id="d0">1</span>
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
+        </div>
+      </section>
+
+      <!-- Slide 1: 2 juggling -->
+      <section data-slide="juggling"
+               data-siteswap="2">
+        <div class="slide-juggling">
+	  <div id="siteswap-display">
+            <span class="ss-digit" id="d0">2</span>
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
+        </div>
+      </section>
+
+
       <!-- Slide 1: 3 juggling -->
       <section data-slide="juggling"
                data-siteswap="3">
@@ -153,6 +176,24 @@
 	  </div>
 	  <canvas id="juggle-canvas"></canvas>
         </div>
+      </section>
+
+      <section data-slide="siteswaps">
+	<h2>Welche Zahlenfolgen sind jonglierbar?</h2>
+	<ul>
+	  <li>Zu jedem Zeitpunkt muss <b>genau 1 Ball</b> landen<br>(Außer bei einem <b>"0" Wurf</b>, dann darf <b>kein Ball</b> hier landen)</li>
+	  <li>Eine mögliche Definition:<br>ein Siteswap $a_0a_1a_2\dots a_{n-1}$ ist valide,<br>wenn die Menge $S=\{(a_i+i)\bmod n | 0\leq i\leq n-1\}$<br>genau $n$ Elemente enthält.</li>
+	  <li>Beispiel: 123 geht ($S=\{1,0,2\}$), 321 nicht ($S=\{3\}$)</li>
+	  <li><b>Der Durchschnitt der Zahlen $a_i$ ist die Anzahl der Bälle</b></li>
+	</ul>
+      </section>
+
+      <section data-slide="states">
+	<h2>Kann man diese Muster aneinander hängen?</h2>
+	Das hängt vom <i>Zustand</i> ab!<br><br>
+	Muster wie <b>3</b> sind im <i>Grundzustand</i>
+	<br><br>
+	Muster wie <b>51</b> (<i>Shower</i>) sind in einem <i>angeregten</i> Zustand
       </section>
 
 
@@ -267,173 +308,221 @@
         </div><!-- /relative wrapper -->
       </section>
 
+      <section data-slide="transition-diagram">
+	<b>Alle Übergange mit maximaler Wurfhöhe 5 und 3 Bällen:</b>
+	<img src="img/patterns_5_3.svg" width="100%"><br>
+	Beispiel:<br>
+	<ul>
+	  <li>wir kommen aus der <b>3</b> in die <b>51</b> mit z.B. <b>4</b> oder <b>52</b></li>
+	  <li>wir kommen wieder zurück mit z.B. <b>2</b> oder <b>41</b></li>
+	</ul>
+      </section>
+
+
+      <section data-slide="juggling"
+               data-siteswap="333333451515123333335251515141">
+        <div class="slide-juggling">
+	  333333451515123333335251515141
+	  <div id="siteswap-display">
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
+        </div>
+      </section>
+
+      <section data-slide="juggling"
+               data-siteswap="8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b64a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681" data-ref-throw="10">
+        <div class="slide-juggling">
+	  <p style="font-size:12px">
+	    8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b<br>
+	    5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b6<br>
+	    4a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071<br>
+	    b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681</p>
+	  <div id="siteswap-display">
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
+        </div>
+      </section>
+
+      <section>
+	<h2>Mehr als 2 Hände</h2>
+	<h3>Why not 86277?</h3>
+	<ul>
+	  <li>Die Anzahl der Hände ist beliebig, wir müssen nur eine Wurfreihenfolge festlegen</li>
+	  <li>Beliebte Variante: 4 Hände, verteilt auf 2 Personen</li>
+	  <li>Beide werfen abwechselnd, jeweils beide Hände abwechselnd</li>
+	  <li>Führt zu z.B.: eine <b>6</b> ist ein <i>self</i> (wechselt Hand, aber nicht Person), <b>7</b> ein <i>pass</i> (wechselt Person)</li>
+	  <li>eine:r wirft die <i>7</i> gerade, die:der andere über Kreuz</li>
+	</ul>
+      </section>
+
     </div>
   </div>
 
   <script src="dist/reveal.js"></script>
+  <script src="dist/plugin/math.js"></script>
   <script src="juggling.js"></script>
   <script>
-    Reveal.initialize({ hash: true, controls: false, progress: false });
+   Reveal.initialize({ hash: true, controls: false, progress: false, plugins: [RevealMath.KaTeX] });
 
-    // ── Generic juggling slides ───────────────────────────────────────────────
-    let anim = null;
+   // ── Generic juggling slides ───────────────────────────────────────────────
+   let anim = null;
 
-    function startJugglingSlide(section) {
-      const canvas  = section.querySelector('canvas');
-      const digits  = [...section.querySelectorAll('.ss-digit')];
-      const timers  = digits.map(() => null);
+   function startJugglingSlide(section) {
+       const canvas  = section.querySelector('canvas');
+       const digits  = [...section.querySelectorAll('.ss-digit')];
+       const timers  = digits.map(() => null);
 
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+       canvas.width  = canvas.offsetWidth;
+       canvas.height = canvas.offsetHeight;
 
-      const onBeat = digits.length ? (beatPos, throwVal, color) => {
-        const mid = color[1], digit = digits[beatPos];
-        if (!digit) return;
-        digit.style.color = mid;
-        digit.style.textShadow = `0 0 40px ${mid}, 0 1px 4px rgba(0,0,0,0.08)`;
-        if (timers[beatPos]) clearTimeout(timers[beatPos]);
-        timers[beatPos] = setTimeout(() => {
-          digit.style.color = '#bbb';
-          digit.style.textShadow = '0 1px 4px rgba(0,0,0,0.08)';
-        }, 400);
-      } : null;
+       const onBeat = digits.length ? (beatPos, throwVal, color) => {
+           const mid = color[1], digit = digits[beatPos];
+           if (!digit) return;
+           digit.style.color = mid;
+           digit.style.textShadow = `0 0 40px ${mid}, 0 1px 4px rgba(0,0,0,0.08)`;
+           if (timers[beatPos]) clearTimeout(timers[beatPos]);
+           timers[beatPos] = setTimeout(() => {
+               digit.style.color = '#bbb';
+               digit.style.textShadow = '0 1px 4px rgba(0,0,0,0.08)';
+           }, 400);
+       } : null;
 
-      const ds = section.dataset;
-      if (anim) anim.stop();
-      anim = startJuggling(canvas, {
-        siteswap: ds.siteswap  ?? '3',
-        refThrow: parseFloat(ds.refThrow     ?? '5'),
-        height:   Math.round(canvas.height * parseFloat(ds.heightRatio  ?? '0.55')),
-        spacing:  Math.round(canvas.width  * parseFloat(ds.spacingRatio ?? '0.1')),
-        floorY:   Math.round(canvas.height * parseFloat(ds.floorRatio   ?? '0.82')),
-        onBeat,
-      });
-    }
+       const ds = section.dataset;
+       if (anim) anim.stop();
+       anim = startJuggling(canvas, {
+           siteswap: ds.siteswap  ?? '3',
+           refThrow: parseFloat(ds.refThrow     ?? '5'),
+           height:   Math.round(canvas.height * parseFloat(ds.heightRatio  ?? '0.55')),
+           spacing:  Math.round(canvas.width  * parseFloat(ds.spacingRatio ?? '0.1')),
+           floorY:   Math.round(canvas.height * parseFloat(ds.floorRatio   ?? '0.82')),
+           onBeat,
+       });
+   }
 
-    // ── Slide 2: 51 ──────────────────────────────────────────────────────────
-    const canvas2 = document.getElementById('canvas-51');
-    let anim2 = null;
+   // ── Slide 2: 51 ──────────────────────────────────────────────────────────
+   const canvas2 = document.getElementById('canvas-51');
+   let anim2 = null;
 
-    // beat → ball index (-1 = empty); matches CELLS in the IIFE
-    const CELL_BALL  = [0, 1, 1, 2, 2, 0, 0, 1, -1, 2];
-    // beat → arrow index that LANDS on that beat
-    const LANDING_AT = {5:0, 2:1, 7:2, 4:3, 9:4, 6:5};
-    const LIGHT_FILL = ['#fef4f4', '#f4fef4', '#f4f4fe'];
-    const hue2 = i => `hsl(${[0, 120, 240][i]},80%,40%)`;
+   // beat → ball index (-1 = empty); matches CELLS in the IIFE
+   const CELL_BALL  = [0, 1, 1, 2, 2, 0, 0, 1, -1, 2];
+   // beat → arrow index that LANDS on that beat
+   const LANDING_AT = {5:0, 2:1, 7:2, 4:3, 9:4, 6:5};
+   const LIGHT_FILL = ['#fef4f4', '#f4fef4', '#f4f4fe'];
+   const hue2 = i => `hsl(${[0, 120, 240][i]},80%,40%)`;
 
-    function resetDiagram() {
-      for (let i = 0; i < 6; i++) {
-        const el = document.getElementById('arrow-' + i);
-        if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
-      }
-      CELL_BALL.forEach((ball, i) => {
-        const empty = ball < 0;
-        const rect = document.getElementById('cell-rect-' + i);
-        if (rect) rect.setAttribute('fill', empty ? '#f0f0f0' : LIGHT_FILL[ball]);
-        const lbl = document.getElementById('cell-label-' + i);
-        if (lbl) lbl.setAttribute('fill', empty ? '#bbb' : hue2(ball));
-      });
-    }
+   function resetDiagram() {
+       for (let i = 0; i < 6; i++) {
+           const el = document.getElementById('arrow-' + i);
+           if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
+       }
+       CELL_BALL.forEach((ball, i) => {
+           const empty = ball < 0;
+           const rect = document.getElementById('cell-rect-' + i);
+           if (rect) rect.setAttribute('fill', empty ? '#f0f0f0' : LIGHT_FILL[ball]);
+           const lbl = document.getElementById('cell-label-' + i);
+           if (lbl) lbl.setAttribute('fill', empty ? '#bbb' : hue2(ball));
+       });
+   }
 
-    function revealBeat(beat) {
-      const ball = CELL_BALL[beat];
-      const rect = document.getElementById('cell-rect-' + beat);
-      if (rect && (ball >= 0)) rect.setAttribute('fill', hue2(ball));
-      if (ball < 0) rect.setAttribute('fill', "#aaa");
-      const lbl = document.getElementById('cell-label-' + beat);
-      if (lbl) lbl.setAttribute('fill', '#fff');
-      const ai = LANDING_AT[beat];  // landing: show the arrow
-      if (ai !== undefined) {
-        const el = document.getElementById('arrow-' + ai);
-        if (el) { el.style.transition = 'opacity 0.25s ease'; el.style.opacity = '1'; }
-      }
-    }
+   function revealBeat(beat) {
+       const ball = CELL_BALL[beat];
+       const rect = document.getElementById('cell-rect-' + beat);
+       if (rect && (ball >= 0)) rect.setAttribute('fill', hue2(ball));
+       if (ball < 0) rect.setAttribute('fill', "#aaa");
+       const lbl = document.getElementById('cell-label-' + beat);
+       if (lbl) lbl.setAttribute('fill', '#fff');
+       const ai = LANDING_AT[beat];  // landing: show the arrow
+       if (ai !== undefined) {
+           const el = document.getElementById('arrow-' + ai);
+           if (el) { el.style.transition = 'opacity 0.25s ease'; el.style.opacity = '1'; }
+       }
+   }
 
-    function hideBeat(beat) {
-      const ball = CELL_BALL[beat];
-      //if (ball >= 0 && beat < 6) {
-      if (true) {
-        const rect = document.getElementById('cell-rect-' + beat);
-        if (rect) rect.setAttribute('fill', LIGHT_FILL[ball]);
-        const lbl = document.getElementById('cell-label-' + beat);
-	if (ball >= 0 && lbl) lbl.setAttribute('fill', hue2(ball));
-	else if (ball < 0) {
-	  lbl.setAttribute('fill', '#bbb');
-	  rect.setAttribute('fill', '#f0f0f0');
-	}
-      }
-      const ai = LANDING_AT[beat];
-      if (ai !== undefined) {
-        const el = document.getElementById('arrow-' + ai);
-        if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
-      }
-    }
+   function hideBeat(beat) {
+       const ball = CELL_BALL[beat];
+       //if (ball >= 0 && beat < 6) {
+       if (true) {
+           const rect = document.getElementById('cell-rect-' + beat);
+           if (rect) rect.setAttribute('fill', LIGHT_FILL[ball]);
+           const lbl = document.getElementById('cell-label-' + beat);
+	   if (ball >= 0 && lbl) lbl.setAttribute('fill', hue2(ball));
+	   else if (ball < 0) {
+	       lbl.setAttribute('fill', '#bbb');
+	       rect.setAttribute('fill', '#f0f0f0');
+	   }
+       }
+       const ai = LANDING_AT[beat];
+       if (ai !== undefined) {
+           const el = document.getElementById('arrow-' + ai);
+           if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
+       }
+   }
 
-    function startAnim2() {
-      canvas2.width  = canvas2.offsetWidth;
-      canvas2.height = canvas2.offsetHeight;
+   function startAnim2() {
+       canvas2.width  = canvas2.offsetWidth;
+       canvas2.height = canvas2.offsetHeight;
 
-      if (anim2) anim2.stop();
-      resetDiagram();
-      anim2 = startJuggling(canvas2, {
-        siteswap:       '51',
-        refThrow:       5,
-        height:         Math.round(canvas2.height * 0.4),
-        spacing:        Math.round(canvas2.width  * 0.1),
-        floorY:         Math.round(canvas2.height * 0.5),
-        throwCutoffBeat: 6,
-        showFloor:       true,
-      });
-      // re-apply visible fragments and seek animation to matching position
-      let visibleBeats = 0;
-      document.querySelectorAll('#frag-triggers .fragment.visible').forEach(frag => {
-        revealBeat(parseInt(frag.getAttribute('data-fragment-index')));
-        visibleBeats++;
-      });
-      anim2.seekTo(visibleBeats * anim2.T);
-    }
+       if (anim2) anim2.stop();
+       resetDiagram();
+       anim2 = startJuggling(canvas2, {
+           siteswap:       '51',
+           refThrow:       5,
+           height:         Math.round(canvas2.height * 0.4),
+           spacing:        Math.round(canvas2.width  * 0.1),
+           floorY:         Math.round(canvas2.height * 0.5),
+           throwCutoffBeat: 6,
+           showFloor:       true,
+       });
+       // re-apply visible fragments and seek animation to matching position
+       let visibleBeats = 0;
+       document.querySelectorAll('#frag-triggers .fragment.visible').forEach(frag => {
+           revealBeat(parseInt(frag.getAttribute('data-fragment-index')));
+           visibleBeats++;
+       });
+       anim2.seekTo(visibleBeats * anim2.T);
+   }
 
-    function stopAnim2() {
-      if (anim2) { anim2.stop(); anim2 = null; }
-    }
+   function stopAnim2() {
+       if (anim2) { anim2.stop(); anim2 = null; }
+   }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
-    const slideId = el => el?.dataset?.slide ?? null;
+   // ── Lifecycle ─────────────────────────────────────────────────────────────
+   const slideId = el => el?.dataset?.slide ?? null;
 
-    Reveal.on('ready', () => {
-      const slide = Reveal.getCurrentSlide();
-      if (slideId(slide) === 'juggling')    startJugglingSlide(slide);
-      if (slideId(slide) === 'juggling-51') startAnim2();
-    });
+   Reveal.on('ready', () => {
+       const slide = Reveal.getCurrentSlide();
+       if (slideId(slide) === 'juggling')    startJugglingSlide(slide);
+       if (slideId(slide) === 'juggling-51') startAnim2();
+   });
 
-    Reveal.on('slidechanged', event => {
-      const prev = slideId(event.previousSlide);
-      const curr = slideId(event.currentSlide);
-      if (prev === 'juggling')    anim?.stop();
-      if (prev === 'juggling-51') stopAnim2();
-      if (curr === 'juggling')    startJugglingSlide(event.currentSlide);
-      if (curr === 'juggling-51') startAnim2();
-    });
+   Reveal.on('slidechanged', event => {
+       const prev = slideId(event.previousSlide);
+       const curr = slideId(event.currentSlide);
+       if (prev === 'juggling')    anim?.stop();
+       if (prev === 'juggling-51') stopAnim2();
+       if (curr === 'juggling')    startJugglingSlide(event.currentSlide);
+       if (curr === 'juggling-51') startAnim2();
+   });
 
-    Reveal.on('fragmentshown', event => {
-      if (slideId(Reveal.getCurrentSlide()) !== 'juggling-51') return;
-      const beat = parseInt(event.fragment.getAttribute('data-fragment-index'));
-      revealBeat(beat);
-      anim2.stepBeats(1);
-    });
+   Reveal.on('fragmentshown', event => {
+       if (slideId(Reveal.getCurrentSlide()) !== 'juggling-51') return;
+       const beat = parseInt(event.fragment.getAttribute('data-fragment-index'));
+       revealBeat(beat);
+       anim2.stepBeats(1);
+   });
 
-    Reveal.on('fragmenthidden', event => {
-      if (slideId(Reveal.getCurrentSlide()) !== 'juggling-51') return;
-      const beat = parseInt(event.fragment.getAttribute('data-fragment-index'));
-      hideBeat(beat);
-      anim2.seekTo(beat * anim2.T);
-    });
+   Reveal.on('fragmenthidden', event => {
+       if (slideId(Reveal.getCurrentSlide()) !== 'juggling-51') return;
+       const beat = parseInt(event.fragment.getAttribute('data-fragment-index'));
+       hideBeat(beat);
+       anim2.seekTo(beat * anim2.T);
+   });
 
-    window.addEventListener('resize', () => {
-      const slide = Reveal.getCurrentSlide();
-      if (slideId(slide) === 'juggling')    startJugglingSlide(slide);
-      if (slideId(slide) === 'juggling-51') startAnim2();
-    });
+   window.addEventListener('resize', () => {
+       const slide = Reveal.getCurrentSlide();
+       if (slideId(slide) === 'juggling')    startJugglingSlide(slide);
+       if (slideId(slide) === 'juggling-51') startAnim2();
+   });
   </script>
 </body>
 </html>
