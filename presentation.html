@@ -7,47 +7,59 @@
   <link rel="stylesheet" href="dist/theme/white.css">
   <script src="dist/svg.min.js"></script>
   <style>
-    :root { --r-main-font-size: 30px; }
-    .reveal .slides section {
-      height: 100%;
-      padding: 0;
-    }
-    .slide-juggling {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-    }
-    #juggle-canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-    }
-    #siteswap-display {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      gap: 0.3em;
-      font-size: 18vw;
-      font-weight: bold;
-      font-family: monospace;
-      line-height: 1;
-      pointer-events: none;
-      /* push it toward top-center */
-      margin-top: 4vh;
-      align-self: flex-start;
-      margin-left: auto;
-      margin-right: auto;
-    }
+   :root { --r-main-font-size: 30px; }
+   .reveal .slides section[data-slide="titel"] {
+       height: auto;
+   }
+   .reveal .slides section {
+       height: 100%;
+       padding: 0;
+   }
+   .slide-juggling {
+       position: relative;
+       width: 100%;
+       height: 100%;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: flex-start;
+   }
+   #juggle-canvas {
+       position: absolute;
+       top: 0; left: 0;
+       width: 100%; height: 100%;
+   }
+   #siteswap-display {
+       position: relative;
+       z-index: 10;
+       display: flex;
+       gap: 0.3em;
+       font-size: 18vw;
+       font-weight: bold;
+       font-family: monospace;
+       line-height: 1;
+       pointer-events: none;
+       /* push it toward top-center */
+       margin-top: 4vh;
+       align-self: flex-start;
+       margin-left: auto;
+       margin-right: auto;
+   }
    .ss-digit {
-      font-size: 40px;
+       font-size: 40px;
        /* transition: color 0.12s; */
-      color: #bbb;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
+       color: #bbb;
+       text-shadow: 0 1px 4px rgba(0,0,0,0.08);
+   }
+   li {
+       margin: 20px 0;
+   }
+   ul.narrow li {
+       margin: 10px 0;
+   }
+   ul.extra-narrow li {
+       margin: 5px 0;
+   }
   </style>
 </head>
 <body>
@@ -67,11 +79,11 @@
 
       <section data-slide="siteswaps">
 	<h2>Siteswaps</h2>
-	<ul>
+	<ul class="narrow">
 	  <li>"Jonglieren" in diesem Kontext:
 	    <ul>
 	      <li>Die Hände (meistens 2) werfen abwechselnd</li>
-	      <li>In jedem Zeitschritt wird 0 oder 1 Ball geworfen (nicht mehrere)</li>
+	      <li>In jedem Zeitschritt wird 0 oder 1 Ball geworfen</li>
 	    </ul>
 	    <li>Jongliermuster werden als Zahlenfolge beschrieben</li>
 	    <li>Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet<br>&rarr; Wurfhöhe</li>
@@ -190,7 +202,8 @@
       </section>
 
       <section data-slide="states">
-	<h2>Kann man diese Muster aneinander hängen?</h2>
+	  <h2>Kann man diese Muster aneinander hängen?</h2>
+	  <br><br>
 	Das hängt vom <i>Zustand</i> ab!<br><br>
 	Muster wie <b>3</b> sind im <i>Grundzustand</i>
 	<br><br>
@@ -330,20 +343,6 @@
         </div>
       </section>
 
-      <section data-slide="juggling"
-               data-siteswap="8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b64a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681" data-ref-throw="10">
-        <div class="slide-juggling">
-	  <p style="font-size:12px">
-	    8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b<br>
-	    5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b6<br>
-	    4a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071<br>
-	    b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681</p>
-	  <div id="siteswap-display">
-	  </div>
-	  <canvas id="juggle-canvas"></canvas>
-        </div>
-      </section>
-
       <section>
 	<h2>Mehr als 2 Hände</h2>
 	<h3>Why not 86277?</h3>
@@ -356,9 +355,14 @@
 	</ul>
       </section>
 
+
+      <section>
+	  <a href="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1">Why not in passist</a>
+      </section>
+
       <section>
 	<h3>Es gibt natürlich noch viel mehr ...</h3>
-	<ul>
+	<ul class="extra-narrow">
 	  <li>Was wenn wir auch gleichzeitig mit beiden/mehreren Händen werfen?<br>
 	    &rarr; Notation mit Klammern und <tt>x</tt> für Überkreuzwürfe, z.B. kennt jeder <tt>(6x,4)(4,6x)</tt>, kurz <tt>6x4</tt></li>
 	  <li>Was wenn wir mehrere Bälle gleichzeitig werfen und fangen?<br>&rarr; Notation mit eckigen Klammern</li>
@@ -371,6 +375,21 @@
 	    <li>Ball/Antiball-Paare werden während des Jongliermusters erzeugt und vernichten sich auch wieder</li>
 	  </ul>
 	</ul>
+      </section>
+
+      <section data-slide="juggling"
+               data-siteswap="8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b64a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681" data-ref-throw="10">
+          <div class="slide-juggling">
+	      <h3>Vielen Dank!</h3>
+	  <p style="font-size:12px">
+	    8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b<br>
+	    5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b6<br>
+	    4a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071<br>
+	    b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681</p>
+	  <div id="siteswap-display">
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
+        </div>
       </section>
 
     </div>
