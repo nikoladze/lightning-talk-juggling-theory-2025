@@ -5,7 +5,7 @@
   <title>Juggling Presentation</title>
   <link rel="stylesheet" href="dist/reveal.css">
   <link rel="stylesheet" href="dist/theme/white.css">
-  <script src="dist/svg.min.js"></script>
+  <script src="svg.min.js"></script>
   <style>
    :root { --r-main-font-size: 30px; }
    .reveal .slides section[data-slide="titel"] {
@@ -397,9 +397,10 @@
 
   <script src="dist/reveal.js"></script>
   <script src="dist/plugin/math.js"></script>
+  <script src="dist/plugin/notes.js"></script>
   <script src="juggling.js"></script>
   <script>
-   Reveal.initialize({ hash: true, controls: false, progress: false, plugins: [RevealMath.KaTeX] });
+   Reveal.initialize({ hash: true, controls: false, progress: false, plugins: [RevealMath.KaTeX, RevealNotes] });
 
    // ── Generic juggling slides ───────────────────────────────────────────────
    let anim = null;
