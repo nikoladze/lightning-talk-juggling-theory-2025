@@ -75,25 +75,36 @@
       <section data-slide="titel">
 	<h1>n Bälle, m Hände</h1>
 	<h2>Einführung in die Jongliertheorie</h2>
+	<i style="font-size:20px">slides powered by reveal.js & claude code</i>
       </section>
 
       <section data-slide="siteswaps">
-	<h2>Siteswaps</h2>
-	<ul class="narrow">
+	<h1>Siteswap Notation</h1>
+	<div class="r-stack">
+	<ul class="fragment fade-in-then-out">
 	  <li>"Jonglieren" in diesem Kontext:
 	    <ul>
 	      <li>Die Hände (meistens 2) werfen abwechselnd</li>
 	      <li>In jedem Zeitschritt wird 0 oder 1 Ball geworfen</li>
 	    </ul>
 	    <li>Jongliermuster werden als Zahlenfolge beschrieben</li>
-	    <li>Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet<br>&rarr; Wurfhöhe</li>
+	    <li>Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet</li>
+	</ul>
+	<p class="fragment current-visible" align="center" style="font-size:40px"><b>Zahl ~ Wurfhöhe</b></p>
+	<ul class="fragment current-visible">
 	    <li>Bei 2 Händen:</li>
 	    <ul>
 	      <li><b>Ungerade Zahl:</b> Wurf über Kreuz <b>in die andre Hand</b></li>
 	      <li><b>Gerade Zahl:</b> Wurf in landet <b>in der gleichen Hand</b></li>
 	    </ul>
-	    <li>Das Muster wird unendlich wiederholt<br>&rarr; z.B. 3 ist äquivalent zu 3333333...</li>
+	    <li>Das Muster wird unendlich wiederholt</li>
+	    <ul>
+	      <li><b>Periode:</b> Länge der sich wiederholenden Sequenz</li>
+	      <li>3 (Periode 1) ist äquivalent zu 3333333...</li>
+	      <li>531 (Periode 3) ist äquivalent zu 531531531...</li>
+	    </ul>
 	</ul>
+	</div>
       </section>
 
       <!-- Slide 1: 1 juggling -->
@@ -179,6 +190,20 @@
         </div>
       </section>
 
+      <!-- Slide 1: 501 juggling -->
+      <section data-slide="juggling"
+               data-siteswap="501">
+        <div class="slide-juggling">
+	  <div id="siteswap-display">
+            <span class="ss-digit" id="d0">5</span>
+            <span class="ss-digit" id="d1">0</span>
+            <span class="ss-digit" id="d2">1</span>
+	  </div>
+	  <canvas id="juggle-canvas"></canvas>
+        </div>
+      </section>
+
+
 
       <!-- Slide 1: z juggling -->
       <section data-slide="juggling"
@@ -194,20 +219,22 @@
       <section data-slide="siteswaps">
 	<h2>Welche Zahlenfolgen sind jonglierbar?</h2>
 	<ul>
-	  <li>Zu jedem Zeitpunkt muss <b>genau 1 Ball</b> landen<br>(Außer bei einem <b>"0" Wurf</b>, dann darf <b>kein Ball</b> hier landen)</li>
-	  <li>Eine mögliche Definition:<br>ein Siteswap $a_0a_1a_2\dots a_{n-1}$ ist valide,<br>wenn die Menge $S=\{(a_i+i)\bmod n | 0\leq i\leq n-1\}$<br>genau $n$ Elemente enthält.</li>
-	  <li>Beispiel: 123 geht ($S=\{1,0,2\}$), 321 nicht ($S=\{3\}$)</li>
-	  <li><b>Der Durchschnitt der Zahlen $a_i$ ist die Anzahl der Bälle</b></li>
+	  <li class="fragment">Zu jedem Zeitpunkt muss <b>genau 1 Ball</b> landen<br>(Außer bei einem <b>"0" Wurf</b>, dann darf <b>kein Ball</b> hier landen)</li>
+	  <li class="fragment">Eine mögliche Definition:<br>ein Siteswap $a_0a_1a_2\dots a_{n-1}$ ist valide,<br>wenn die Menge $S=\{(a_i+i)\bmod n | 0\leq i\leq n-1\}$<br>genau $n$ Elemente enthält.</li>
+	  <li class="fragment">Beispiel: <span style="color:red">1</span><span style="color:green">2</span><span style="color:blue">3</span> geht ($S=\{{\color{green}1},{\color{red}0},{\color{blue}2}\}$), 321 nicht ($S=\{0\}$)</li>
+	  <li class="fragment"><b>Der Durchschnitt der Zahlen $a_i$ ist die Anzahl der Bälle</b></li>
+	  <li class="fragment"><b>Notwendige Vorraussetzung: Ganzzahliger Durchschnitt</b></li>
 	</ul>
       </section>
 
-      <section data-slide="states">
+      <section data-slide="juggling" data-siteswap="51" data-ref-throw="6" data-spacing-ratio="0.1">
 	  <h2>Kann man diese Muster aneinander hängen?</h2>
 	  <br><br>
 	Das hängt vom <i>Zustand</i> ab!<br><br>
 	Muster wie <b>3</b> sind im <i>Grundzustand</i>
 	<br><br>
 	Muster wie <b>51</b> (<i>Shower</i>) sind in einem <i>angeregten</i> Zustand
+	<canvas id="juggle-canvas" class="fragment"></canvas>
       </section>
 
 
@@ -239,11 +266,11 @@
 
           // ── arrow data: [srcBeat, dstBeat, controlY]  (reveal order = index) ─
           const ARROWS = [
-            [0, 5,  10],   // beat 0 → 5  (throw 5, ball 0 red)
+            [0, 5,  0],   // beat 0 → 5  (throw 5, ball 0 red)
             [1, 2,  80],   // beat 1 → 2  (throw 1, ball 1 green)
-            [2, 7,  40],   // beat 2 → 7  (throw 5, ball 1 green)
+            [2, 7,  0],   // beat 2 → 7  (throw 5, ball 1 green)
             [3, 4,  80],   // beat 3 → 4  (throw 1, ball 2 blue)
-            [4, 9,  65],   // beat 4 → 9  (throw 5, ball 2 blue)
+            [4, 9,  0],   // beat 4 → 9  (throw 5, ball 2 blue)
             [5, 6,  80],   // beat 5 → 6  (throw 1, ball 0 red)
           ];
 
@@ -347,7 +374,7 @@
 	<h2>Mehr als 2 Hände</h2>
 	<h3>Why not 86277?</h3>
 	<ul>
-	  <li>Die Anzahl der Hände ist beliebig, wir müssen nur eine Wurfreihenfolge festlegen</li>
+	  <li>Die Anzahl der Hände ist beliebig<br>&rarr; wir müssen nur eine Wurfreihenfolge festlegen!</li>
 	  <li>Beliebte Variante: 4 Hände, verteilt auf 2 Personen</li>
 	  <li>Beide werfen abwechselnd, jeweils beide Hände abwechselnd</li>
 	  <li>Führt zu z.B.: eine <b>6</b> ist ein <i>self</i> (wechselt Hand, aber nicht Person), <b>7</b> ein <i>pass</i> (wechselt Person)</li>
@@ -357,7 +384,8 @@
 
 
       <section>
-	  <a href="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1">Why not in passist</a>
+	<a href="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1">86277 (Why not) in passist.org:</a>
+	<iframe data-src="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1" style="width:100%;height:100%"></iframe>
       </section>
 
       <section>
