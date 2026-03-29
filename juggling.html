@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Juggling Animation</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #111; }
+    canvas { display: block; }
+    #controls {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      color: #ccc;
+      font: 13px/1 monospace;
+      background: rgba(0,0,0,0.55);
+      padding: 8px 14px;
+      border-radius: 8px;
+    }
+    #controls label { display: flex; align-items: center; gap: 8px; }
+    #controls input[type=number], #controls input[type=text] {
+      width: 56px;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 4px 6px;
+      font: inherit;
+    }
+    #controls input[type=range] { width: 130px; accent-color: #777; }
+    #lblHeight, #lblSpacing { min-width: 52px; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="controls">
+    <label>Siteswap <input id="inSiteswap" type="text" value="3" style="width:72px"></label>
+    <label>Ref throw <input id="inRef" type="number" min="1" max="35" value="3" style="width:44px"></label>
+    <label>Height <input id="inHeight" type="range" min="50" max="620" value="267"></label>
+    <span id="lblHeight">267 px</span>
+    <label>Spacing <input id="inSpacing" type="range" min="10" max="800" value="300"></label>
+    <span id="lblSpacing">300 px</span>
+  </div>
+  <script src="juggling.js"></script>
+  <script>
+    const canvas = document.getElementById('canvas');
+    let anim = null;
+    let floorY = 0;
+
+    function opts() {
+      return {
+        siteswap: document.getElementById('inSiteswap').value,
+        refThrow: Math.max(1, parseInt(document.getElementById('inRef').value) || 3),
+        height:   parseInt(document.getElementById('inHeight').value),
+        spacing:  parseInt(document.getElementById('inSpacing').value),
+        floorY,
+      };
+    }
+
+    function restart() {
+      document.getElementById('lblHeight').textContent  = document.getElementById('inHeight').value  + ' px';
+      document.getElementById('lblSpacing').textContent = document.getElementById('inSpacing').value + ' px';
+      if (anim) anim.stop();
+      anim = startJuggling(canvas, opts());
+    }
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctrl = document.getElementById('controls');
+      floorY = canvas.height - ctrl.offsetHeight - 50 - 14 - 14;
+
+      const hSlider = document.getElementById('inHeight');
+      hSlider.max = floorY - 50;
+      if (parseInt(hSlider.value) > hSlider.max) hSlider.value = hSlider.max;
+
+      const sSlider = document.getElementById('inSpacing');
+      sSlider.max = Math.max(10, canvas.width - 200);
+
+      restart();
+    }
+
+    document.getElementById('inSiteswap').addEventListener('change', restart);
+    document.getElementById('inRef').addEventListener('change', restart);
+    document.getElementById('inHeight').addEventListener('input', restart);
+    document.getElementById('inSpacing').addEventListener('input', restart);
+    window.addEventListener('resize', resize);
+
+    resize();
+  </script>
+</body>
+</html>
