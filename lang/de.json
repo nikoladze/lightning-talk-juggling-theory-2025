@@ -1,0 +1,60 @@
+{
+  "lang": "de",
+  "title": "Jonglier-Vortrag",
+  "base": "",
+
+  "titel_h1": "n Bälle, m Hände",
+  "titel_h2": "Einführung in die Jongliertheorie",
+  "titel_tagline": "slides powered by reveal.js &amp; claude code",
+
+  "siteswaps_h1": "Siteswap Notation",
+  "siteswaps_li1": "\"Jonglieren\" in diesem Kontext:",
+  "siteswaps_li1_sub1": "Die Hände (meistens 2) werfen abwechselnd",
+  "siteswaps_li1_sub2": "In jedem Zeitschritt wird 0 oder 1 Ball geworfen",
+  "siteswaps_li2": "Jongliermuster werden als Zahlenfolge beschrieben",
+  "siteswaps_li3": "Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet",
+  "siteswaps_height_label": "Zahl ~ Wurfhöhe",
+  "siteswaps_li4": "Bei 2 Händen:",
+  "siteswaps_li4_sub1": "<b>Ungerade Zahl:</b> Wurf über Kreuz <b>in die andre Hand</b>",
+  "siteswaps_li4_sub2": "<b>Gerade Zahl:</b> Wurf in landet <b>in der gleichen Hand</b>",
+  "siteswaps_li5": "Das Muster wird unendlich wiederholt",
+  "siteswaps_li5_sub1": "<b>Periode:</b> Länge der sich wiederholenden Sequenz",
+  "siteswaps_li5_sub2": "3 (Periode 1) ist äquivalent zu 3333333...",
+  "siteswaps_li5_sub3": "531 (Periode 3) ist äquivalent zu 531531531...",
+
+  "valid_h2": "Welche Zahlenfolgen sind jonglierbar?",
+  "valid_li1": "Zu jedem Zeitpunkt muss <b>genau 1 Ball</b> landen<br>(Außer bei einem <b>\"0\" Wurf</b>, dann darf <b>kein Ball</b> hier landen)",
+  "valid_li2": "Eine mögliche Definition:<br>ein Siteswap $a_0a_1a_2\\dots a_{n-1}$ ist valide,<br>wenn die Menge $S=\\{(a_i+i)\\bmod n | 0\\leq i\\leq n-1\\}$<br>genau $n$ Elemente enthält.",
+  "valid_li3": "Beispiel: <span style=\"color:red\">1</span><span style=\"color:green\">2</span><span style=\"color:blue\">3</span> geht ($S=\\{{\\color{green}1},{\\color{red}0},{\\color{blue}2}\\}$), 321 nicht ($S=\\{0\\}$)",
+  "valid_li4": "<b>Der Durchschnitt der Zahlen $a_i$ ist die Anzahl der Bälle</b>",
+  "valid_li5": "<b>Notwendige Vorraussetzung: Ganzzahliger Durchschnitt</b>",
+
+  "state_h2": "Kann man diese Muster aneinander hängen?",
+  "state_body": "Das hängt vom <i>Zustand</i> ab!<br><br>\n\tMuster wie <b>3</b> sind im <i>Grundzustand</i>\n\t<br><br>\n\tMuster wie <b>51</b> (<i>Shower</i>) sind in einem <i>angeregten</i> Zustand",
+
+  "transitions_heading": "Alle Übergange mit maximaler Wurfhöhe 5 und 3 Bällen:",
+  "transitions_example": "Beispiel:",
+  "transitions_li1": "wir kommen aus der <b>3</b> in die <b>51</b> mit z.B. <b>4</b> oder <b>52</b>",
+  "transitions_li2": "wir kommen wieder zurück mit z.B. <b>2</b> oder <b>41</b>",
+
+  "multiplex_h2": "Mehr als 2 Hände",
+  "multiplex_li1": "Die Anzahl der Hände ist beliebig<br>&rarr; wir müssen nur eine Wurfreihenfolge festlegen!",
+  "multiplex_li2": "Beliebte Variante: 4 Hände, verteilt auf 2 Personen",
+  "multiplex_li3": "Beide werfen abwechselnd, jeweils beide Hände abwechselnd",
+  "multiplex_li4": "Führt zu z.B.: eine <b>6</b> ist ein <i>self</i> (wechselt Hand, aber nicht Person), <b>7</b> ein <i>pass</i> (wechselt Person)",
+  "multiplex_li5": "eine:r wirft die <b>7</b> gerade, die:der andere über Kreuz",
+
+  "passist_link": "86277 (Why not) in passist.org:",
+
+  "more_h3": "Es gibt natürlich noch viel mehr ...",
+  "more_li1": "Was wenn wir auch gleichzeitig mit beiden/mehreren Händen werfen?<br>&rarr; Notation mit Klammern und <tt>x</tt> für Überkreuzwürfe, z.B. kennt jeder <tt>(6x,4)(4,6x)</tt>, kurz <tt>6x4</tt>",
+  "more_li2": "Was wenn wir mehrere Bälle gleichzeitig werfen und fangen?<br>&rarr; Notation mit eckigen Klammern",
+  "more_li3": "Was wenn sich die Hände irgendwie auch noch bewegen?",
+  "more_li4": "Was wenn die Zahlen negativ sind?!?",
+  "more_li4_sub1": "Hier lernen wir aus der Physik von Dirac:",
+  "more_li4_sub2": "Negative Zahlen repräsentieren <b>Antibälle</b> oder äquivalent (Feynman/Stückelberg):",
+  "more_li4_sub3": "Bälle die <b>rückwärts in der Zeit</b> fliegen",
+  "more_li4_sub4": "Ball/Antiball-Paare werden während des Jongliermusters erzeugt und vernichten sich auch wieder",
+
+  "thanks_h3": "Vielen Dank!"
+}

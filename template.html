@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{lang}}">
 <head>
   <meta charset="UTF-8">
-  <title>Juggling Presentation</title>
-  <link rel="stylesheet" href="reveal.js/dist/reveal.css">
-  <link rel="stylesheet" href="reveal.js/dist/theme/white.css">
-  <script src="svg.min.js"></script>
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="{{base}}reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="{{base}}reveal.js/dist/theme/white.css">
+  <script src="{{base}}svg.min.js"></script>
   <style>
    :root { --r-main-font-size: 30px; }
    .reveal .slides section[data-slide="titel"] {
@@ -73,35 +73,35 @@
       -->
 
       <section data-slide="titel">
-	<h1>n Bälle, m Hände</h1>
-	<h2>Einführung in die Jongliertheorie</h2>
-	<i style="font-size:20px">slides powered by reveal.js & claude code</i>
+	<h1>{{titel_h1}}</h1>
+	<h2>{{titel_h2}}</h2>
+	<i style="font-size:20px">{{titel_tagline}}</i>
       </section>
 
       <section data-slide="siteswaps">
-	<h1>Siteswap Notation</h1>
+	<h1>{{siteswaps_h1}}</h1>
 	<div class="r-stack">
 	<ul class="fragment fade-in-then-out">
-	  <li>"Jonglieren" in diesem Kontext:
+	  <li>{{siteswaps_li1}}
 	    <ul>
-	      <li>Die Hände (meistens 2) werfen abwechselnd</li>
-	      <li>In jedem Zeitschritt wird 0 oder 1 Ball geworfen</li>
+	      <li>{{siteswaps_li1_sub1}}</li>
+	      <li>{{siteswaps_li1_sub2}}</li>
 	    </ul>
-	    <li>Jongliermuster werden als Zahlenfolge beschrieben</li>
-	    <li>Zahl beschreibt wie viele Zeitschritte später der Ball wieder landet</li>
+	    <li>{{siteswaps_li2}}</li>
+	    <li>{{siteswaps_li3}}</li>
 	</ul>
-	<p class="fragment current-visible" align="center" style="font-size:40px"><b>Zahl ~ Wurfhöhe</b></p>
+	<p class="fragment current-visible" align="center" style="font-size:40px"><b>{{siteswaps_height_label}}</b></p>
 	<ul class="fragment current-visible">
-	    <li>Bei 2 Händen:</li>
+	    <li>{{siteswaps_li4}}</li>
 	    <ul>
-	      <li><b>Ungerade Zahl:</b> Wurf über Kreuz <b>in die andre Hand</b></li>
-	      <li><b>Gerade Zahl:</b> Wurf in landet <b>in der gleichen Hand</b></li>
+	      <li>{{siteswaps_li4_sub1}}</li>
+	      <li>{{siteswaps_li4_sub2}}</li>
 	    </ul>
-	    <li>Das Muster wird unendlich wiederholt</li>
+	    <li>{{siteswaps_li5}}</li>
 	    <ul>
-	      <li><b>Periode:</b> Länge der sich wiederholenden Sequenz</li>
-	      <li>3 (Periode 1) ist äquivalent zu 3333333...</li>
-	      <li>531 (Periode 3) ist äquivalent zu 531531531...</li>
+	      <li>{{siteswaps_li5_sub1}}</li>
+	      <li>{{siteswaps_li5_sub2}}</li>
+	      <li>{{siteswaps_li5_sub3}}</li>
 	    </ul>
 	</ul>
 	</div>
@@ -217,23 +217,20 @@
       </section>
 
       <section data-slide="siteswaps">
-	<h2>Welche Zahlenfolgen sind jonglierbar?</h2>
+	<h2>{{valid_h2}}</h2>
 	<ul>
-	  <li class="fragment">Zu jedem Zeitpunkt muss <b>genau 1 Ball</b> landen<br>(Außer bei einem <b>"0" Wurf</b>, dann darf <b>kein Ball</b> hier landen)</li>
-	  <li class="fragment">Eine mögliche Definition:<br>ein Siteswap $a_0a_1a_2\dots a_{n-1}$ ist valide,<br>wenn die Menge $S=\{(a_i+i)\bmod n | 0\leq i\leq n-1\}$<br>genau $n$ Elemente enthält.</li>
-	  <li class="fragment">Beispiel: <span style="color:red">1</span><span style="color:green">2</span><span style="color:blue">3</span> geht ($S=\{{\color{green}1},{\color{red}0},{\color{blue}2}\}$), 321 nicht ($S=\{0\}$)</li>
-	  <li class="fragment"><b>Der Durchschnitt der Zahlen $a_i$ ist die Anzahl der Bälle</b></li>
-	  <li class="fragment"><b>Notwendige Vorraussetzung: Ganzzahliger Durchschnitt</b></li>
+	  <li class="fragment">{{valid_li1}}</li>
+	  <li class="fragment">{{valid_li2}}</li>
+	  <li class="fragment">{{valid_li3}}</li>
+	  <li class="fragment">{{valid_li4}}</li>
+	  <li class="fragment">{{valid_li5}}</li>
 	</ul>
       </section>
 
       <section data-slide="juggling" data-siteswap="51" data-ref-throw="6" data-spacing-ratio="0.1">
-	  <h2>Kann man diese Muster aneinander hängen?</h2>
+	  <h2>{{state_h2}}</h2>
 	  <br><br>
-	Das hängt vom <i>Zustand</i> ab!<br><br>
-	Muster wie <b>3</b> sind im <i>Grundzustand</i>
-	<br><br>
-	Muster wie <b>51</b> (<i>Shower</i>) sind in einem <i>angeregten</i> Zustand
+	{{state_body}}
 	<canvas id="juggle-canvas" class="fragment"></canvas>
       </section>
 
@@ -350,12 +347,12 @@
       </section>
 
       <section data-slide="transition-diagram">
-	<b>Alle Übergange mit maximaler Wurfhöhe 5 und 3 Bällen:</b>
-	<img src="img/patterns_5_3.svg" width="100%"><br>
-	Beispiel:<br>
+	<b>{{transitions_heading}}</b>
+	<img src="{{base}}img/patterns_5_3.svg" width="100%"><br>
+	{{transitions_example}}<br>
 	<ul>
-	  <li>wir kommen aus der <b>3</b> in die <b>51</b> mit z.B. <b>4</b> oder <b>52</b></li>
-	  <li>wir kommen wieder zurück mit z.B. <b>2</b> oder <b>41</b></li>
+	  <li>{{transitions_li1}}</li>
+	  <li>{{transitions_li2}}</li>
 	</ul>
       </section>
 
@@ -371,36 +368,35 @@
       </section>
 
       <section>
-	<h2>Mehr als 2 Hände</h2>
+	<h2>{{multiplex_h2}}</h2>
 	<h3>Why not 86277?</h3>
 	<ul>
-	  <li>Die Anzahl der Hände ist beliebig<br>&rarr; wir müssen nur eine Wurfreihenfolge festlegen!</li>
-	  <li>Beliebte Variante: 4 Hände, verteilt auf 2 Personen</li>
-	  <li>Beide werfen abwechselnd, jeweils beide Hände abwechselnd</li>
-	  <li>Führt zu z.B.: eine <b>6</b> ist ein <i>self</i> (wechselt Hand, aber nicht Person), <b>7</b> ein <i>pass</i> (wechselt Person)</li>
-	  <li>eine:r wirft die <b>7</b> gerade, die:der andere über Kreuz</li>
+	  <li>{{multiplex_li1}}</li>
+	  <li>{{multiplex_li2}}</li>
+	  <li>{{multiplex_li3}}</li>
+	  <li>{{multiplex_li4}}</li>
+	  <li>{{multiplex_li5}}</li>
 	</ul>
       </section>
 
 
       <section>
-	<a href="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1">86277 (Why not) in passist.org:</a>
+	<a href="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1">{{passist_link}}</a>
 	<iframe data-src="https://passist.org/siteswap/86277?jugglers=2&fullscreen=1" style="width:100%;height:100%"></iframe>
       </section>
 
       <section>
-	<h3>Es gibt natürlich noch viel mehr ...</h3>
+	<h3>{{more_h3}}</h3>
 	<ul class="extra-narrow">
-	  <li>Was wenn wir auch gleichzeitig mit beiden/mehreren Händen werfen?<br>
-	    &rarr; Notation mit Klammern und <tt>x</tt> für Überkreuzwürfe, z.B. kennt jeder <tt>(6x,4)(4,6x)</tt>, kurz <tt>6x4</tt></li>
-	  <li>Was wenn wir mehrere Bälle gleichzeitig werfen und fangen?<br>&rarr; Notation mit eckigen Klammern</li>
-	  <li>Was wenn sich die Hände irgendwie auch noch bewegen?</li>
-	  <li>Was wenn die Zahlen negativ sind?!?</li>
+	  <li>{{more_li1}}</li>
+	  <li>{{more_li2}}</li>
+	  <li>{{more_li3}}</li>
+	  <li>{{more_li4}}</li>
 	  <ul>
-	    <li>Hier lernen wir aus der Physik von Dirac:</li>
-	    <li>Negative Zahlen repräsentieren <b>Antibälle</b> oder äquivalent (Feynman/Stückelberg):</li>
-	    <li>Bälle die <b>rückwärts in der Zeit</b> fliegen</li>
-	    <li>Ball/Antiball-Paare werden während des Jongliermusters erzeugt und vernichten sich auch wieder</li>
+	    <li>{{more_li4_sub1}}</li>
+	    <li>{{more_li4_sub2}}</li>
+	    <li>{{more_li4_sub3}}</li>
+	    <li>{{more_li4_sub4}}</li>
 	  </ul>
 	</ul>
       </section>
@@ -408,7 +404,7 @@
       <section data-slide="juggling"
                data-siteswap="8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b64a84938578b847aab184b1a75b88048a7a8590aa794b08a59990bb70639b9792970778bb7349aaa6027a7bb52a499b8071b884a7a60b575b7bb616aa0a83b9a0b92257786975a8ab78208a569b852b74a84abb5099990b07a69294b9b62395aa66bb0ab5a1a09681" data-ref-throw="10">
           <div class="slide-juggling">
-	      <h3>Vielen Dank!</h3>
+	      <h3>{{thanks_h3}}</h3>
 	  <p style="font-size:12px">
 	    8859a594bb85908a80b9a5b07a8047b66b5a69b40a5aa56a06b575959b93b9a3093a56bb7ab50b0a759908b7790999aa0b<br>
 	    5099aaa20892b84b834ab9551899a57b07aaa619b0748ab7ab0ab0b70b18b57b0b964a0b94a346b8b7822b8abb223579b6<br>
@@ -423,10 +419,10 @@
     </div>
   </div>
 
-  <script src="reveal.js/dist/reveal.js"></script>
-  <script src="reveal.js/dist/plugin/math.js"></script>
-  <script src="reveal.js/dist/plugin/notes.js"></script>
-  <script src="juggling.js"></script>
+  <script src="{{base}}reveal.js/dist/reveal.js"></script>
+  <script src="{{base}}reveal.js/dist/plugin/math.js"></script>
+  <script src="{{base}}reveal.js/dist/plugin/notes.js"></script>
+  <script src="{{base}}juggling.js"></script>
   <script>
    Reveal.initialize({ hash: true, controls: false, progress: false, plugins: [RevealMath.KaTeX, RevealNotes] });
 

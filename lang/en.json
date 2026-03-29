@@ -1,0 +1,60 @@
+{
+  "lang": "en",
+  "title": "Juggling Talk",
+  "base": "../",
+
+  "titel_h1": "n Balls, m Hands",
+  "titel_h2": "An Introduction to Juggling Theory",
+  "titel_tagline": "slides powered by reveal.js &amp; claude code",
+
+  "siteswaps_h1": "Siteswap Notation",
+  "siteswaps_li1": "\"Juggling\" in this context:",
+  "siteswaps_li1_sub1": "Hands (usually 2) throw alternately",
+  "siteswaps_li1_sub2": "In each time step, 0 or 1 ball is thrown",
+  "siteswaps_li2": "Juggling patterns are described as a sequence of numbers",
+  "siteswaps_li3": "The number describes how many time steps later the ball lands again",
+  "siteswaps_height_label": "Number ~ throw height",
+  "siteswaps_li4": "With 2 hands:",
+  "siteswaps_li4_sub1": "<b>Odd number:</b> throw crosses <b>to the other hand</b>",
+  "siteswaps_li4_sub2": "<b>Even number:</b> throw lands <b>in the same hand</b>",
+  "siteswaps_li5": "The pattern repeats infinitely",
+  "siteswaps_li5_sub1": "<b>Period:</b> length of the repeating sequence",
+  "siteswaps_li5_sub2": "3 (period 1) is equivalent to 3333333...",
+  "siteswaps_li5_sub3": "531 (period 3) is equivalent to 531531531...",
+
+  "valid_h2": "Which number sequences are jugglable?",
+  "valid_li1": "At each time step, <b>exactly 1 ball</b> must land<br>(except for a <b>\"0\" throw</b>, then <b>no ball</b> may land here)",
+  "valid_li2": "One possible definition:<br>a siteswap $a_0a_1a_2\\dots a_{n-1}$ is valid,<br>if the set $S=\\{(a_i+i)\\bmod n | 0\\leq i\\leq n-1\\}$<br>has exactly $n$ distinct elements.",
+  "valid_li3": "Example: <span style=\"color:red\">1</span><span style=\"color:green\">2</span><span style=\"color:blue\">3</span> works ($S=\\{{\\color{green}1},{\\color{red}0},{\\color{blue}2}\\}$), 321 doesn't ($S=\\{0\\}$)",
+  "valid_li4": "<b>The average of the numbers $a_i$ equals the number of balls</b>",
+  "valid_li5": "<b>Necessary condition: integer average</b>",
+
+  "state_h2": "Can these patterns be chained together?",
+  "state_body": "That depends on the <i>state</i>!<br><br>\n\tPatterns like <b>3</b> are in the <i>ground state</i>\n\t<br><br>\n\tPatterns like <b>51</b> (<i>Shower</i>) are in an <i>excited</i> state",
+
+  "transitions_heading": "All transitions with maximum throw height 5 and 3 balls:",
+  "transitions_example": "Example:",
+  "transitions_li1": "we get from <b>3</b> to <b>51</b> with e.g. <b>4</b> or <b>52</b>",
+  "transitions_li2": "we get back with e.g. <b>2</b> or <b>41</b>",
+
+  "multiplex_h2": "More than 2 hands",
+  "multiplex_li1": "The number of hands is arbitrary<br>&rarr; we just need to define a throwing order!",
+  "multiplex_li2": "Popular variant: 4 hands, distributed across 2 people",
+  "multiplex_li3": "Both throw alternately, each alternating both hands",
+  "multiplex_li4": "Results in e.g.: a <b>6</b> is a <i>self</i> (changes hand, but not person), <b>7</b> is a <i>pass</i> (changes person)",
+  "multiplex_li5": "one person throws the <b>7</b> straight, the other across",
+
+  "passist_link": "86277 (Why not) on passist.org:",
+
+  "more_h3": "There is of course much more ...",
+  "more_li1": "What if we also throw simultaneously with both/multiple hands?<br>&rarr; Notation with parentheses and <tt>x</tt> for crossing throws, e.g. everyone knows <tt>(6x,4)(4,6x)</tt>, short <tt>6x4</tt>",
+  "more_li2": "What if we throw and catch multiple balls at once?<br>&rarr; Notation with square brackets",
+  "more_li3": "What if the hands also move around somehow?",
+  "more_li4": "What if the numbers are negative?!?",
+  "more_li4_sub1": "Here we learn from Dirac's physics:",
+  "more_li4_sub2": "Negative numbers represent <b>anti-balls</b>, or equivalently (Feynman/Stückelberg):",
+  "more_li4_sub3": "Balls that fly <b>backwards in time</b>",
+  "more_li4_sub4": "Ball/anti-ball pairs are created and annihilate during the juggling pattern",
+
+  "thanks_h3": "Thank you!"
+}
