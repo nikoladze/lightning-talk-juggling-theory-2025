@@ -24,6 +24,8 @@ Did you like it? Here are some of the references i used and other fun stuff i re
 - https://www.youtube.com/watch?v=ELvedTUcjPo (a TEDx talk)
 - https://www.qedcat.com/articles/juggling_survey.pdf (survey on mathematical juggling by Burkard Polster, he also wrote [a whole book](https://link.springer.com/book/10.1007/b98883))
 - https://arxiv.org/pdf/math/0302257 (paper on the probability of juggling patterns when "juggling randomly")
+- https://www.youtube.com/watch?v=_5Q4UhyajC4 (youtube video on negative siteswaps - and actually juggling them!)
+- https://juggle.fandom.com/wiki/Impossible_Siteswap_Animator (more info on negative numbers in siteswaps interpreting other "impossible" constellations) 
 
 # Juggling simulators
 
